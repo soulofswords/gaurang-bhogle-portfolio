@@ -47,6 +47,8 @@ const certifications = [
   ['2023', 'Infosys — Young IoT Prodigy'],
 ]
 
+const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.jpg`
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const closeMenu = () => setMenuOpen(false)
@@ -86,7 +88,7 @@ function App() {
             <div className="orbit orbit-one" />
             <div className="orbit orbit-two" />
             <div className="hero-photo-wrap">
-              <img src="/gaurang-photo.jpg" alt="Portrait of Gaurang Parag Bhogle" className="hero-photo" />
+              <img src={profilePhotoUrl} alt="Portrait of Gaurang Parag Bhogle" className="hero-photo" />
               <div className="photo-caption"><span>01</span><span>Curious by default.</span></div>
             </div>
             <div className="hero-sticker"><Sparkles size={16} /> BUILD / BREAK / REPEAT</div>
