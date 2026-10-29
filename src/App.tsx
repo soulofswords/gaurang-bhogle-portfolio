@@ -47,7 +47,7 @@ const certifications = [
   ['2023', 'Infosys — Young IoT Prodigy'],
 ]
 
-const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.jpg`
+const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.png`
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
