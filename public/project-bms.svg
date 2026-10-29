@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
+  <title id="title">Battery management system preview</title>
+  <desc id="desc">Three battery cell groups connected to a monitoring and protection controller.</desc>
+  <rect width="640" height="300" fill="#141721"/>
+  <g stroke="#d5ff3f" fill="none" stroke-width="3">
+    <rect x="52" y="106" width="116" height="74" rx="8"/><rect x="262" y="106" width="116" height="74" rx="8"/><rect x="472" y="106" width="116" height="74" rx="8"/>
+    <path d="M168 143h94M378 143h94"/><path d="M110 92v14M320 92v14M530 92v14M110 180v18M320 180v18M530 180v18"/>
+  </g>
+  <g fill="#f2efe9" font-family="monospace" font-size="18" text-anchor="middle"><text x="110" y="149">CELL 01</text><text x="320" y="149">CELL 02</text><text x="530" y="149">CELL 03</text><text x="320" y="45" fill="#a99bff">3S4P / MONITOR / PROTECT</text></g>
+  <circle cx="320" cy="238" r="20" fill="#a99bff"/><path d="M320 218v-20M320 258v20" stroke="#a99bff" stroke-width="3"/>
+</svg>

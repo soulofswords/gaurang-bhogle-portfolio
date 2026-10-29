@@ -21,22 +21,22 @@ const skills = [
 ]
 
 const projects = [
-  { number: '01', title: 'Smart BMS for EV', type: 'Electrical systems / Mobility', text: 'An ongoing 3S4P 18650 NMC battery-management concept with Arduino control logic, MATLAB simulation and practical protection loops.', tags: ['EV', 'BMS', '3S4P'], tone: 'amber' },
-  { number: '02', title: 'IoT Smart Energy Meter', type: 'IoT / Energy monitoring', text: 'A measurement system for voltage, current and RMS readings. The single-phase prototype delivered accurate readings while the three-phase iteration became a useful learning loop.', tags: ['IoT', 'Energy', 'Arduino'], tone: 'violet' },
+  { number: '01', title: 'Smart BMS for EV', type: 'Electrical systems / Mobility', text: 'An ongoing 3S4P 18650 NMC battery-management concept with Arduino control logic, MATLAB simulation and practical protection loops.', tags: ['EV', 'BMS', '3S4P'], tone: 'amber', visual: 'bms', caption: 'Cell monitoring / protection logic' },
+  { number: '02', title: 'IoT Smart Energy Meter', type: 'IoT / Energy monitoring', text: 'A measurement system for voltage, current and RMS readings. The single-phase prototype delivered accurate readings while the three-phase iteration became a useful learning loop.', tags: ['IoT', 'Energy', 'Arduino'], tone: 'violet', visual: 'meter', caption: 'Voltage + current visibility' },
   { number: '03', title: 'Inverter & Obstacle Avoidance Car', type: 'Embedded / Robotics', text: 'Power electronics and autonomous motion in one playful prototype—built to learn by making.', tags: ['Inverter', 'Robotics', 'Sensors'], tone: 'cyan' },
   { number: '04', title: 'Music-Reactive LED Strip', type: 'Creative electronics', text: 'A physical light experience that listens to sound and translates rhythm into color, movement and atmosphere.', tags: ['Audio', 'LED', 'Realtime'], tone: 'pink' },
   { number: '05', title: 'AI Companion App', type: 'AI-assisted application', text: 'Exploring local-first, personality-driven interfaces where useful software feels a little more human.', tags: ['AI', 'UX', 'Local-first'], tone: 'lime' },
   { number: '06', title: 'VTuber Streaming App', type: 'Creative technology', text: 'A playful production workflow combining virtual identity, live interaction and generative media.', tags: ['VTuber', 'Media', 'Realtime'], tone: 'orange' },
   { number: '07', title: 'Job Application Automator', type: 'Productivity / Automation', text: 'A practical AI workflow for reducing repetitive application work while keeping the human story intact.', tags: ['Agents', 'Automation', 'Web'], tone: 'blue' },
   { number: '08', title: 'ComfyUI Generative Media Pipelines', type: 'AI image + 3D generation', text: 'Node-based creative systems for exploring images, concepts and 3D worlds at the speed of thought.', tags: ['ComfyUI', '3D', 'Generative'], tone: 'purple' },
-  { number: '09', title: 'FPV Drone Builds', type: 'UAV / Flight systems', text: 'Three years of hands-on building across 3.5-inch cinewhoops, 5-inch digital rigs and 7-inch long-range platforms—covering assembly, tuning, camera integration and repair.', tags: ['FPV', 'Betaflight', 'iNav'], tone: 'orange' },
+  { number: '09', title: 'FPV Drone Builds', type: 'UAV / Flight systems', text: 'Three years of hands-on building across 3.5-inch cinewhoops, 5-inch digital rigs and 7-inch long-range platforms—covering assembly, tuning, camera integration and repair.', tags: ['FPV', 'Betaflight', 'iNav'], tone: 'orange', visual: 'drone', caption: 'Build / tune / fly / repair' },
   { number: '10', title: 'Early Electronics Lab', type: 'Long-running maker practice', text: 'A trail of practical builds from table fans, door alarms and emergency lights to speakers, Arduino visualizers, drones and an e-bike.', tags: ['Making', 'Arduino', 'Prototyping'], tone: 'blue' },
 ]
 
 const experience = [
   { date: 'AUG 2026 — PRESENT', company: 'Preflight Labs LLP', role: 'Intern', description: 'Working at the intersection of technical systems, AI-assisted workflows and product experimentation.' },
   { date: '2022 — PRESENT', company: 'Independent FPV Drone Builder', role: 'Self-directed UAV practice', description: 'Built, tested and customized 3.5-inch, 5-inch and 7-inch FPV drones; tuned Betaflight, Cleanflight and iNav builds, integrated cameras, prototyped mounts on a 3D printer, and helped peers troubleshoot repairs.' },
-  { date: 'DEC 2024 — JAN 2025', company: 'Rashtriya Chemicals & Fertilizers', role: 'Electrical Engineering Intern', description: 'Industrial exposure to electrical engineering practices, operations and the systems that keep a large plant moving.' },
+  { date: '17 DEC 2024 — 04 JAN 2025', company: 'Rashtriya Chemicals & Fertilizers', role: 'Electrical Engineering Intern · A.N. Melt Plant', description: 'Completed 15 training days studying process, electrical equipment and electrical maintenance activities at RCF’s A.N. Melt Plant in Mumbai.' },
   { date: 'DEC 2024 — JAN 2025', company: 'Space Root Education', role: 'Technical Collaborator', description: 'Supported Betaflight configuration, component selection and troubleshooting for a 7-inch long-range build and peer drone projects.' },
   { date: '2020 — PRESENT', company: 'Independent / Freelance', role: 'YouTube content creator + editor', description: 'Video and photo editing across Filmora, After Effects, Premiere Pro, Photoshop and Canva—from scripting and voiceovers to motion graphics, thumbnails and audience engagement.' },
 ]
@@ -133,7 +133,10 @@ function App() {
             {projects.map((project) => (
               <article className={`project-card ${project.tone}`} key={project.number}>
                 <div className="project-top"><span>{project.number}</span><ArrowUpRight size={18} /></div>
-                <div className="project-art" aria-hidden="true"><div className="art-shape" /><div className="art-line" /><span className="art-label">SYSTEM / 0{project.number}</span></div>
+                <div className={`project-art ${project.visual ? 'has-thumbnail' : ''}`} aria-hidden="true">
+                  {project.visual ? <img className="project-thumbnail" src={`${import.meta.env.BASE_URL}project-${project.visual}.svg`} alt="" /> : <><div className="art-shape" /><div className="art-line" /></>}
+                  <span className="art-label">{project.caption ?? `SYSTEM / 0${project.number}`}</span>
+                </div>
                 <p className="project-type">{project.type}</p>
                 <h3>{project.title}</h3>
                 <p className="project-text">{project.text}</p>
