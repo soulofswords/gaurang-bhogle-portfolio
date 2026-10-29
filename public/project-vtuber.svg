@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
+  <title id="title">VTuber streaming app preview</title><desc id="desc">A virtual avatar frame connected to a live stream interface.</desc>
+  <rect width="640" height="300" fill="#141721"/><g stroke="#ff956b" fill="none" stroke-width="3"><rect x="78" y="68" width="214" height="164" rx="10"/><circle cx="185" cy="140" r="42"/><path d="M162 164q23 20 46 0M292 150h72M400 102h160v96H400zM420 126h90M420 154h70"/></g><g fill="#f2efe9" font-family="monospace" font-size="18" text-anchor="middle"><text x="320" y="42" fill="#ff956b">AVATAR / STREAM / AUDIENCE</text><text x="480" y="220">LIVE</text></g>
+</svg>

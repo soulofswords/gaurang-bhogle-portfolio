@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
+  <title id="title">Music reactive LED preview</title><desc id="desc">Audio frequencies mapped to a colored LED strip.</desc>
+  <rect width="640" height="300" fill="#141721"/><g fill="none" stroke="#f685c2" stroke-width="3"><path d="M70 190h50l20-90 24 130 26-170 24 130 25-70 25 70 26-110 25 110 24-80 25 80 22-50 24 50h100"/><path d="M70 220h500" stroke-dasharray="5 8"/></g><g fill="#f2efe9" font-family="monospace" font-size="18" text-anchor="middle"><text x="320" y="42" fill="#f685c2">AUDIO / LED / REALTIME</text><text x="320" y="260">RHYTHM → COLOR</text></g>
+</svg>
