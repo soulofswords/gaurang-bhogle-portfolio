@@ -1,76 +1,219 @@
 import { useState } from 'react'
 import {
+  ArrowRight,
   ArrowUpRight,
+  CircuitBoard,
+  Github,
   Linkedin,
   Mail,
+  MapPin,
   Menu,
-  MoveUpRight,
-  Sparkles,
+  Wrench,
   X,
-  Zap,
   Youtube,
 } from 'lucide-react'
 
-const skills = [
-  'Electrical circuits', 'Wiring + soldering', 'Microcontrollers', 'Arduino IDE',
-  'C++', 'Electronics prototyping', 'Inverter circuitry', 'Energy measurement',
-  'FPV drone design + assembly', 'Betaflight', 'Cleanflight', 'INAV', 'Mission Planner', 'DJI software', '3D printing', 'MATLAB', 'LaTeX',
-  'Python fundamentals', 'Power BI', 'Claude Code', 'Google Antigravity', 'ChatGPT / GPT',
-  'Gemini', 'Ollama', 'LM Studio', 'ComfyUI', 'MiniMax H3', 'Higgsfield',
-  'Premiere Pro', 'After Effects', 'Photoshop', 'Canva', 'Filmora',
-  'Video editing', 'Motion graphics', 'Website planning', 'No-code design', 'Coding + debugging',
+const sakuraUrl = 'https://soulofswords.github.io/Sakura-website/'
+
+type Project = {
+  title: string
+  category: string
+  description: string
+  tags: string[]
+  image?: string
+  imageAlt?: string
+  href?: string
+  linkLabel?: string
+  status?: string
+}
+
+const featuredProjects: Project[] = [
+  {
+    title: 'Sakura Companion',
+    category: 'Desktop AI product',
+    description: 'A Windows character companion combining local or cloud AI, memory, voice, approved Agent workflows and optional webcam tracking in one creator-focused application.',
+    tags: ['Python', 'Local AI', 'Product design', 'Desktop'],
+    image: 'project-ai.svg',
+    imageAlt: 'Diagram of the context and response loop in Sakura Companion',
+    href: sakuraUrl,
+    linkLabel: 'View product and downloads',
+    status: 'Released',
+  },
+  {
+    title: 'Sakura VTuber',
+    category: 'Creator and streaming tool',
+    description: 'A standalone VTuber workflow with face and hand tracking, model controls, RVC voice conversion, Spout and virtual-camera output for live production.',
+    tags: ['Computer vision', 'Realtime', 'Streaming', 'UX'],
+    image: 'project-vtuber.svg',
+    imageAlt: 'Diagram of the avatar and live-stream workflow in Sakura VTuber',
+    href: sakuraUrl,
+    linkLabel: 'View product and downloads',
+    status: 'Released',
+  },
 ]
 
-const projects = [
-  { number: '01', title: 'Smart BMS for EV', type: 'Electrical systems / Mobility', text: 'An ongoing 3S4P 18650 NMC battery-management concept with Arduino control logic, MATLAB simulation and practical protection loops.', tags: ['EV', 'BMS', '3S4P'], tone: 'amber', visual: 'bms', caption: 'Cell monitoring / protection logic' },
-  { number: '02', title: 'IoT Smart Energy Meter', type: 'IoT / Energy monitoring', text: 'A measurement system for voltage, current and RMS readings. The single-phase prototype delivered accurate readings while the three-phase iteration became a useful learning loop.', tags: ['IoT', 'Energy', 'Arduino'], tone: 'violet', visual: 'meter', caption: 'Voltage + current visibility', href: 'https://github.com/soulofswords/iot-smart-meter' },
-  { number: '03', title: 'Half-Bridge Inverter', type: 'Power electronics', text: 'A hands-on inverter study focused on switching, conversion and the practical discipline of documenting a power-electronics prototype.', tags: ['Inverter', 'Power', 'Switching'], tone: 'cyan', caption: 'DC / AC conversion', href: 'https://github.com/soulofswords/inverter-half-bridge' },
-  { number: '04', title: 'Obstacle Avoidance Car', type: 'Embedded / Robotics', text: 'An autonomous motion prototype using sensors and control logic to detect obstacles and choose a path forward.', tags: ['Robotics', 'Sensors', 'Arduino'], tone: 'cyan', visual: 'robot', caption: 'Sense / decide / move', href: 'https://github.com/soulofswords/obstacle-avoidance-robot' },
-  { number: '05', title: 'Music-Reactive LED Strip', type: 'Creative electronics', text: 'A physical light experience that listens to sound and translates rhythm into color, movement and atmosphere.', tags: ['Audio', 'LED', 'Realtime'], tone: 'pink', visual: 'led', caption: 'Sound into light', href: 'https://github.com/soulofswords/music-reactive-led' },
-  { number: '06', title: 'AI Companion App', type: 'AI-assisted application', text: 'Exploring local-first, personality-driven interfaces where useful software feels a little more human.', tags: ['AI', 'UX', 'Local-first'], tone: 'lime', visual: 'ai', caption: 'Interface / context / response', href: 'https://soulofswords.github.io/Sakura-website/' },
-  { number: '07', title: 'VTuber Streaming App', type: 'Creative technology', text: 'A playful production workflow combining virtual identity, live interaction and generative media.', tags: ['VTuber', 'Media', 'Realtime'], tone: 'orange', visual: 'vtuber', caption: 'Avatar / stream / audience', href: 'https://soulofswords.github.io/Sakura-website/' },
-  { number: '08', title: 'Job Application Automator', type: 'Productivity / Automation', text: 'A practical AI workflow for reducing repetitive application work while keeping the human story intact.', tags: ['Agents', 'Automation', 'Web'], tone: 'blue', visual: 'job', caption: 'Find / match / apply' },
-  { number: '09', title: 'ComfyUI Generative Media Pipelines', type: 'AI image + 3D generation', text: 'Node-based creative systems for exploring images, concepts and 3D worlds at the speed of thought.', tags: ['ComfyUI', '3D', 'Generative'], tone: 'purple', visual: 'comfy', caption: 'Nodes / images / worlds' },
-  { number: '10', title: 'FPV Drone Builds', type: 'UAV / Flight systems', text: 'Three years of hands-on building across 3.5-inch cinewhoops, 5-inch digital rigs and 7-inch long-range platforms—covering assembly, tuning, camera integration and repair.', tags: ['FPV', 'Betaflight', 'iNav'], tone: 'orange', visual: 'drone', caption: 'Build / tune / fly / repair' },
-  { number: '11', title: 'Early Electronics Lab', type: 'Long-running maker practice', text: 'A trail of practical builds from table fans, door alarms and emergency lights to speakers, Arduino visualizers, drones and an e-bike.', tags: ['Making', 'Arduino', 'Prototyping'], tone: 'blue' },
+const selectedProjects: Project[] = [
+  {
+    title: 'Smart BMS for EV',
+    category: 'Battery systems',
+    description: 'An ongoing 3S4P 18650 NMC battery-management prototype covering cell monitoring, protection logic, Arduino control and MATLAB simulation.',
+    tags: ['BMS', 'Arduino', 'MATLAB'],
+    image: 'project-bms.svg',
+    imageAlt: 'Battery cells connected to monitoring and protection logic',
+    status: 'In development',
+  },
+  {
+    title: 'IoT Smart Energy Meter',
+    category: 'Energy monitoring',
+    description: 'A connected meter for voltage, current and RMS measurement. The single-phase prototype produced reliable readings and informed a three-phase iteration.',
+    tags: ['ESP32', 'PZEM', 'IoT'],
+    image: 'project-meter.svg',
+    imageAlt: 'Energy meter dashboard showing live electrical readings',
+    href: 'https://github.com/soulofswords/iot-smart-meter',
+    linkLabel: 'View repository',
+  },
+  {
+    title: 'FPV Drone Platforms',
+    category: 'UAV systems',
+    description: 'Three years of assembling, tuning and repairing 3.5-inch cinewhoops, 5-inch digital builds and 7-inch long-range platforms.',
+    tags: ['Betaflight', 'iNav', 'Fabrication'],
+    image: 'project-drone.svg',
+    imageAlt: 'Technical diagram of an FPV quadcopter and flight data',
+    status: 'Ongoing practice',
+  },
+  {
+    title: 'Half-Bridge Inverter',
+    category: 'Power electronics',
+    description: 'A practical study of switching and DC-to-AC conversion, developed to strengthen power-stage assembly, testing and technical documentation.',
+    tags: ['Inverter', 'Switching', 'Power'],
+    href: 'https://github.com/soulofswords/inverter-half-bridge',
+    linkLabel: 'View repository',
+  },
+  {
+    title: 'Obstacle Avoidance Car',
+    category: 'Embedded robotics',
+    description: 'An autonomous vehicle prototype using distance sensing and embedded control logic to detect obstacles and select a clear path.',
+    tags: ['Arduino', 'Sensors', 'Robotics'],
+    image: 'project-robot.svg',
+    imageAlt: 'Obstacle-avoidance robot sensing objects in its path',
+    href: 'https://github.com/soulofswords/obstacle-avoidance-robot',
+    linkLabel: 'View repository',
+  },
+  {
+    title: 'Music-Reactive LED Strip',
+    category: 'Creative electronics',
+    description: 'A realtime lighting prototype that maps incoming audio energy to colour and motion for responsive ambient installations.',
+    tags: ['Audio', 'LED', 'Realtime'],
+    image: 'project-led.svg',
+    imageAlt: 'Audio waveform driving a colour-changing LED strip',
+    href: 'https://github.com/soulofswords/music-reactive-led',
+    linkLabel: 'View repository',
+  },
+]
+
+const additionalWork = [
+  ['Job Application Automator', 'Agent-assisted research and repetitive workflow automation.'],
+  ['ComfyUI Media Pipelines', 'Node-based image, concept and 3D generation workflows.'],
+  ['Early Electronics Lab', 'Fans, alarms, emergency lights, speakers, visualizers and an E-bike.'],
 ]
 
 const experience = [
-  { date: 'AUG 2026 — PRESENT', company: 'Preflight Labs LLP', role: 'Intern', description: 'Working at the intersection of technical systems, AI-assisted workflows and product experimentation.' },
-  { date: '2022 — PRESENT', company: 'Independent FPV Drone Builder', role: 'Self-directed UAV practice', description: 'Built, tested and customized 3.5-inch, 5-inch and 7-inch FPV drones; tuned Betaflight, Cleanflight and iNav builds, integrated cameras, prototyped mounts on a 3D printer, and helped peers troubleshoot repairs.' },
-  { date: '17 DEC 2024 — 04 JAN 2025', company: 'Rashtriya Chemicals & Fertilizers', role: 'Electrical Engineering Intern · A.N. Melt Plant', description: 'Completed 15 training days studying process, electrical equipment and electrical maintenance activities at RCF’s A.N. Melt Plant in Mumbai.' },
-  { date: 'DEC 2024 — JAN 2025', company: 'Space Root Education', role: 'Technical Collaborator', description: 'Supported Betaflight configuration, component selection and troubleshooting for a 7-inch long-range build and peer drone projects.' },
-  { date: '2020 — PRESENT', company: 'Independent / Freelance', role: 'YouTube content creator + editor', description: 'Video and photo editing across Filmora, After Effects, Premiere Pro, Photoshop and Canva—from scripting and voiceovers to motion graphics, thumbnails and audience engagement.' },
+  {
+    date: 'Aug 2026 — Present',
+    company: 'Preflight Labs LLP',
+    role: 'Engineering Intern',
+    description: 'Supporting technical systems, AI-assisted development and product experimentation in an applied engineering environment.',
+  },
+  {
+    date: '2022 — Present',
+    company: 'Independent FPV Drone Builder',
+    role: 'UAV design, assembly and troubleshooting',
+    description: 'Build, tune and repair FPV platforms; integrate cameras and flight hardware; prototype mounts; and help peers diagnose hardware and configuration issues.',
+  },
+  {
+    date: 'Dec 2024 — Jan 2025',
+    company: 'Rashtriya Chemicals & Fertilizers',
+    role: 'Electrical Engineering Intern · A.N. Melt Plant',
+    description: 'Completed 15 days of industrial training focused on plant processes, electrical equipment and maintenance practices.',
+  },
+  {
+    date: 'Dec 2024 — Jan 2025',
+    company: 'Space Root Education',
+    role: 'Technical Collaborator',
+    description: 'Supported component selection, Betaflight setup and troubleshooting for a 7-inch long-range drone and related student builds.',
+  },
+  {
+    date: '2020 — Present',
+    company: 'Independent / Freelance',
+    role: 'Video creator and editor',
+    description: 'Produce videos from scripting and voiceover through editing, motion graphics, thumbnails and publishing.',
+  },
+]
+
+const capabilities = [
+  {
+    number: '01',
+    title: 'Electrical & power',
+    items: ['Circuit prototyping', 'Wiring and soldering', 'Battery systems', 'Power electronics', 'Energy measurement'],
+  },
+  {
+    number: '02',
+    title: 'Embedded & flight',
+    items: ['Arduino and C++', 'Microcontrollers', 'Betaflight', 'iNav and Mission Planner', 'FPV assembly and tuning'],
+  },
+  {
+    number: '03',
+    title: 'Software & AI',
+    items: ['Python fundamentals', 'AI-assisted development', 'Local language models', 'Automation workflows', 'Testing and debugging'],
+  },
+  {
+    number: '04',
+    title: 'Design & production',
+    items: ['3D printing', 'Premiere Pro', 'After Effects', 'Photoshop', 'Motion graphics'],
+  },
 ]
 
 const certifications = [
-  ['11 JUL 2026', 'Infosys — Introduction to Cyber Security'],
-  ['11 JUL 2026', 'Infosys — Cyber Security Overview'],
-  ['30 JUN 2024', 'Infosys — Demystifying Generative AI for Leaders'],
-  ['18 SEP 2024', 'LinkedIn Learning — Python Essential Training'],
-  ['12 SEP 2024', 'LinkedIn Learning — Getting Started with Power BI'],
-  ['13 SEP 2024', 'LinkedIn Learning — Canva Essential Training'],
-  ['04 JUL 2024', 'LinkedIn Learning — How to Plan Your Website'],
-  ['04 JUL 2024', 'LinkedIn Learning — Introduction to Web Design and Development'],
-  ['04 JUL 2024', 'LinkedIn Learning — Getting Started as a Full-Stack Web Developer'],
-  ['06 JUL 2024', 'LinkedIn Learning — No-Code Web Design'],
-  ['01 JUL 2024', 'TCS iON — Basics of Customer Services'],
-  ['30 JUN 2024', 'TCS iON — Basics of Inventory Management'],
-  ['22 DEC 2023', 'Infosys — Young IoT Prodigy'],
+  ['2026', 'Infosys — Introduction to Cyber Security'],
+  ['2024', 'Infosys — Demystifying Generative AI for Leaders'],
+  ['2024', 'LinkedIn Learning — Python Essential Training'],
+  ['2024', 'LinkedIn Learning — Getting Started with Power BI'],
+  ['2023', 'Infosys — Young IoT Prodigy'],
 ]
 
-const storyMilestones = [
-  { year: '8TH STANDARD', title: 'The first solder joints', text: 'Curiosity became hands-on when I started opening up circuits, learning to solder, and making small devices work: a portable fan, speaker, cooler and emergency light.' },
-  { year: '10TH STANDARD', title: 'Learning from an E-bike', text: 'A home-built E-bike with roughly 20 km of range introduced me to Li-ion cells, battery management and the difference between an idea and a system that has to survive real use.' },
-  { year: '12TH STANDARD', title: 'The first FPV pull', text: 'I sourced parts through AliExpress and Robu.in to build an analog FPV drone. That first flight opened a longer path through assembly, tuning, repair and flight systems.' },
-  { year: 'MAKING THROUGH SETBACKS', title: 'Self-directed by necessity', text: 'Academic setbacks did not end the making. They made the learning more self-directed: documentation, experiments, debugging and returning to the bench became the reliable rhythm.' },
-  { year: 'CREATIVE SYSTEMS', title: 'From Wondershare to motion/VFX', text: 'Video editing grew from Wondershare into Premiere Pro, After Effects, Photoshop and Media Encoder, with experiments in 3D text, Saber, matte tracking, Boris and motion-led storytelling.' },
-  { year: 'THE WIDER TOOLKIT', title: '3D, games and communities', text: 'I explored Blender, Maya, VRoid and Unity assets, attended a VJTI aero workshop, followed the Aero Club, joined GDSC, prototyped games in Unity and continued learning Unreal.' },
-  { year: 'BUILDING WITH OTHERS', title: 'Projects, teams and early collaborations', text: 'The path included the inverter and obstacle-avoidance car, the PZEM + ESP32 smart meter, Vanilla Kart’s WordPress/news-site work, and an early Soul.ai collaboration that did not continue.' },
-  { year: 'NOW', title: 'Flight systems and applied work', text: 'FPV freelance builds and troubleshooting led through Bharat, Space Root Education, Cortex Flight System and the IIT Indore/incubation context. Today at Preflight Labs LLP, I build projects for the army.' },
-]
+const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.jpg`
 
-const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.png`
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const content = (
+    <>
+      <div className="project-card-top">
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        {project.href ? <ArrowUpRight size={18} aria-hidden="true" /> : <CircuitBoard size={18} aria-hidden="true" />}
+      </div>
+      {project.image ? (
+        <div className="project-image-wrap">
+          <img src={`${import.meta.env.BASE_URL}${project.image}`} alt={project.imageAlt ?? ''} />
+        </div>
+      ) : (
+        <div className="project-placeholder" aria-hidden="true"><CircuitBoard size={42} /></div>
+      )}
+      <p className="project-category">{project.category}</p>
+      <h3>{project.title}</h3>
+      <p className="project-description">{project.description}</p>
+      <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+      <div className="project-card-footer">
+        <span>{project.linkLabel ?? project.status}</span>
+        {project.href && <ArrowRight size={16} aria-hidden="true" />}
+      </div>
+    </>
+  )
+
+  if (project.href) {
+    return <a className="project-card" href={project.href} target="_blank" rel="noreferrer">{content}</a>
+  }
+
+  return <article className="project-card">{content}</article>
+}
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -78,150 +221,176 @@ function App() {
 
   return (
     <div className="site-shell">
-      <div className="grain" aria-hidden="true" />
-      <header className="topbar">
-        <a className="brand" href="#top" onClick={closeMenu} aria-label="Gaurang Bhogle home">
-          <span className="brand-mark">GB</span>
-          <span>GAURANG<br /><em>BHOGLE</em></span>
-        </a>
-        <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Main navigation">
-          <a href="#work" onClick={closeMenu}>Selected work</a>
-          <a href="#experience" onClick={closeMenu}>Experience</a>
-          <a href="#about" onClick={closeMenu}>About</a>
-          <a href="#contact" onClick={closeMenu}>Contact</a>
-        </nav>
-        <a className="nav-cta" href="mailto:gaurangbhogle1@gmail.com">Let&apos;s talk <ArrowUpRight size={15} /></a>
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen}>
-          {menuOpen ? <X /> : <Menu />}
-        </button>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
+
+      <header className="site-header">
+        <div className="header-inner">
+          <a className="brand" href="#top" onClick={closeMenu}>
+            <span className="brand-mark">GB</span>
+            <span className="brand-copy"><strong>Gaurang Bhogle</strong><small>Electrical Engineering</small></span>
+          </a>
+
+          <nav className={menuOpen ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
+            <a href="#projects" onClick={closeMenu}>Projects</a>
+            <a href="#experience" onClick={closeMenu}>Experience</a>
+            <a href="#about" onClick={closeMenu}>About</a>
+            <a href="#contact" onClick={closeMenu}>Contact</a>
+          </nav>
+
+          <a className="header-contact" href="mailto:gaurangbhogle1@gmail.com">Get in touch <ArrowUpRight size={15} /></a>
+          <button className="menu-button" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen}>
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </header>
 
-      <main id="top">
-        <section className="hero section-wrap">
-          <div className="hero-copy">
-            <p className="eyebrow"><span className="status-dot" /> Electrical engineer / creative technologist</p>
-            <h1>Building the<br /><span className="outline-text">unusual.</span></h1>
-            <p className="hero-lede">I&apos;m Gaurang — an electrical engineering candidate exploring what happens when <strong>hardware, AI and imagination</strong> share the same workbench.</p>
+      <main id="main-content">
+        <section className="hero page-width" id="top">
+          <div className="hero-content">
+            <p className="overline"><span /> Electrical engineering · Embedded systems · Applied AI</p>
+            <h1>Building reliable systems from <em>circuit</em> to interface.</h1>
+            <p className="hero-summary">I&apos;m Gaurang Bhogle, an electrical engineering candidate focused on practical hardware, FPV platforms and software tools for creators. I turn early concepts into working, testable prototypes.</p>
             <div className="hero-actions">
-              <a className="button button-primary" href="#work">Explore the work <MoveUpRight size={17} /></a>
-              <a className="text-link" href="mailto:gaurangbhogle1@gmail.com">Start a conversation <ArrowUpRight size={16} /></a>
+              <a className="button button-primary" href="#projects">View selected work <ArrowRight size={17} /></a>
+              <a className="button button-secondary" href="mailto:gaurangbhogle1@gmail.com">Email me</a>
             </div>
+            <dl className="hero-details">
+              <div><dt>Current</dt><dd>Engineering Intern · Preflight Labs LLP</dd></div>
+              <div><dt>Based in</dt><dd>Navi Mumbai, India</dd></div>
+            </dl>
           </div>
-          <div className="hero-visual">
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <div className="hero-photo-wrap">
-              <img src={profilePhotoUrl} alt="Portrait of Gaurang Parag Bhogle" className="hero-photo" />
-              <div className="photo-caption"><span>01</span><span>Curious by default.</span></div>
-            </div>
-            <div className="hero-sticker"><Sparkles size={16} /> BUILD / BREAK / REPEAT</div>
-            <span className="hero-coordinate">19°04&apos;N / 72°59&apos;E</span>
-          </div>
-          <div className="scroll-cue"><span /> Scroll to explore</div>
-        </section>
 
-        <section className="signal-band">
-          <div className="signal-track">
-            <span>Electrical engineering</span><i>✳</i><span>AI-assisted development</span><i>✳</i><span>Electronics</span><i>✳</i><span>Creative technology</span><i>✳</i><span>Electrical engineering</span>
+          <div className="portrait-panel">
+            <div className="portrait-frame"><img src={profilePhotoUrl} alt="Gaurang Bhogle wearing a dark suit" /></div>
+            <div className="portrait-caption"><span>Electrical engineering</span><span>Creator</span><span>Builder</span></div>
           </div>
         </section>
 
-        <section className="intro section-wrap" id="about">
-          <div className="section-label"><span>001</span><span>THE SIGNAL</span></div>
-          <div className="intro-grid">
-            <h2>Where voltage<br />meets <em>vision.</em></h2>
-            <div className="intro-copy">
-              <p className="lead">I like understanding how things work—and then finding a more interesting way to make them work.</p>
-              <p>My foundation is electrical engineering: circuits, microcontrollers, power, measurement and the stubborn joy of a prototype finally doing what it should. For the last three years, that curiosity has also taken me into FPV drone design, tuning and flight.</p>
-              <p>The through-line is curiosity. I&apos;m interested in tools that make the physical world more responsive, and the digital world more alive.</p>
-              <a className="arrow-link" href="mailto:gaurangbhogle1@gmail.com">Get in touch <ArrowUpRight size={16} /></a>
-            </div>
+        <section className="focus-strip" aria-label="Areas of focus">
+          <div className="page-width focus-strip-inner">
+            <span>Power electronics</span><i />
+            <span>Embedded systems</span><i />
+            <span>FPV &amp; UAV platforms</span><i />
+            <span>AI products</span><i />
+            <span>Creative technology</span>
           </div>
         </section>
 
-        <section className="biography section-wrap" id="story">
-          <div className="section-label"><span>002</span><span>THE STORY</span><span className="section-count">A maker&apos;s timeline</span></div>
-          <div className="biography-intro">
-            <div><p className="eyebrow">Biography</p><h2>Built by<br /><em>curiosity.</em></h2></div>
-            <div className="biography-lede">
-              <p className="lead">I did not start with a perfect roadmap. I started by soldering things together and asking what would happen if I tried one more version.</p>
-              <p>From small electronics and an E-bike to FPV drones, motion graphics, game prototypes and AI-assisted tools, my work has grown through a mix of fascination, setbacks and persistence. The common thread is practical learning: understand the system, make a first version, test it honestly, and keep the useful parts.</p>
-              <a className="arrow-link" href="https://www.instagram.com/satlok_soul_serinity/" target="_blank" rel="noreferrer">See creative work on Instagram <ArrowUpRight size={16} /></a>
-            </div>
+        <section className="section page-width" id="projects">
+          <div className="section-intro">
+            <div><p className="section-kicker">Selected work</p><h2>Projects built to solve, test and learn.</h2></div>
+            <p>A focused selection across desktop software, electrical systems, embedded hardware and flight platforms.</p>
           </div>
-          <div className="story-grid">
-            {storyMilestones.map((item, index) => (
-              <article className="story-card" key={item.title}>
-                <span className="story-number">0{index + 1}</span>
-                <span className="story-year">{item.year}</span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
 
-        <section className="work section-wrap" id="work">
-          <div className="section-label"><span>003</span><span>SELECTED WORK</span><span className="section-count">11 experiments / ongoing</span></div>
-          <div className="section-heading"><h2>Things I&apos;ve<br /><em>made.</em></h2><p>Prototypes, tools and creative systems—some polished, some gloriously in progress.</p></div>
-          <div className="project-grid">
-            {projects.map((project) => (
-              <article className={`project-card ${project.tone}`} key={project.number}>
-                <div className="project-top"><span>{project.number}</span>{project.href ? <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}><ArrowUpRight size={18} /></a> : <ArrowUpRight size={18} />}</div>
-                <div className={`project-art ${project.visual ? 'has-thumbnail' : ''}`} aria-hidden="true">
-                  {project.visual ? <img className="project-thumbnail" src={`${import.meta.env.BASE_URL}project-${project.visual}.svg`} alt="" /> : <><div className="art-shape" /><div className="art-line" /></>}
-                  <span className="art-label">{project.caption ?? `SYSTEM / 0${project.number}`}</span>
+          <div className="featured-grid">
+            {featuredProjects.map((project) => (
+              <a className="featured-project" href={project.href} target="_blank" rel="noreferrer" key={project.title}>
+                <div className="featured-project-content">
+                  <div className="featured-meta"><span>{project.category}</span><span className="status-badge">{project.status}</span></div>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <div className="tag-list tag-list-dark">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                  <span className="featured-link">{project.linkLabel} <ArrowUpRight size={17} /></span>
                 </div>
-                <p className="project-type">{project.type}</p>
-                <h3>{project.href ? <a className="project-title-link" href={project.href} target="_blank" rel="noreferrer">{project.title}</a> : project.title}</h3>
-                <p className="project-text">{project.text}</p>
-                <div className="tag-row">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
+                <div className="featured-visual"><img src={`${import.meta.env.BASE_URL}${project.image}`} alt={project.imageAlt} /></div>
+              </a>
+            ))}
+          </div>
+
+          <div className="project-grid">
+            {selectedProjects.map((project, index) => <ProjectCard project={project} index={index} key={project.title} />)}
+          </div>
+
+          <div className="additional-work">
+            <div><p className="section-kicker">Additional explorations</p><p>Smaller tools and formative builds that expanded the toolkit.</p></div>
+            <div className="additional-list">
+              {additionalWork.map(([title, description], index) => (
+                <div className="additional-item" key={title}><span>0{index + 1}</span><strong>{title}</strong><p>{description}</p></div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section-tinted" id="experience">
+          <div className="page-width">
+            <div className="section-intro">
+              <div><p className="section-kicker">Experience</p><h2>Applied learning in real environments.</h2></div>
+              <p>Hands-on work across engineering, UAV systems, industrial operations and digital production.</p>
+            </div>
+            <div className="experience-list">
+              {experience.map((item, index) => (
+                <article className="experience-item" key={`${item.company}-${item.date}`}>
+                  <span className="experience-number">0{index + 1}</span>
+                  <p className="experience-date">{item.date}</p>
+                  <div className="experience-main"><h3>{item.company}</h3><p className="experience-role">{item.role}</p><p>{item.description}</p></div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section page-width" id="about">
+          <div className="about-grid">
+            <div className="about-heading">
+              <p className="section-kicker">About</p>
+              <h2>Curious about how systems work. Disciplined about making them work.</h2>
+            </div>
+            <div className="about-copy">
+              <p className="about-lead">My route into engineering started with taking apart everyday electronics, learning to solder and building small devices. That practical habit now shapes how I approach larger systems.</p>
+              <p>I work comfortably between hardware and software: assembling a circuit, tuning a flight controller, testing a measurement path, debugging an application or documenting what changed between versions.</p>
+              <p>I am currently completing a B.E. in Electrical Engineering while expanding my experience through internships, independent FPV work and product development.</p>
+            </div>
+          </div>
+
+          <div className="capability-grid">
+            {capabilities.map((group) => (
+              <article className="capability-card" key={group.title}>
+                <span className="capability-number">{group.number}</span>
+                <h3>{group.title}</h3>
+                <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="experience section-wrap" id="experience">
-          <div className="section-label"><span>004</span><span>FIELD NOTES</span></div>
-          <div className="section-heading"><h2>In the<br /><em>real world.</em></h2><p>Learning by stepping into different rooms, industries and problems.</p></div>
-          <div className="experience-list">
-            {experience.map((item, index) => (
-              <article className="experience-row" key={item.company}>
-                <span className="experience-index">0{index + 1}</span><span className="experience-date">{item.date}</span>
-                <div><h3>{item.company}</h3><p className="role">{item.role}</p><p className="experience-description">{item.description}</p></div>
-                <ArrowUpRight className="experience-arrow" size={18} />
-              </article>
-            ))}
+        <section className="section education-section">
+          <div className="page-width education-grid">
+            <div className="education-summary">
+              <p className="section-kicker">Education</p>
+              <h2>B.E. Electrical Engineering</h2>
+              <p className="institution">Fr. Conceicao Rodrigues Institute of Technology, Vashi</p>
+              <div className="education-meta"><span>2022 — Present</span><span>Navi Mumbai</span></div>
+            </div>
+            <div className="certifications">
+              <div className="certification-heading"><h3>Selected certifications</h3><Wrench size={20} aria-hidden="true" /></div>
+              {certifications.map(([year, title]) => <div className="certification-row" key={title}><span>{year}</span><p>{title}</p></div>)}
+            </div>
           </div>
         </section>
 
-        <section className="skills-section section-wrap">
-          <div className="section-label"><span>005</span><span>THE TOOLKIT</span></div>
-          <div className="skills-grid">
-            <div><h2>Tools for<br /><em>the curious.</em></h2><p>From a soldering iron to a local language model, the right tool is the one that helps the idea become real. The archive starts with small electronics builds in 2016 and keeps expanding through drones, code and visual storytelling.</p></div>
-            <div className="skills-cloud">{skills.map((skill, i) => <span key={skill} className={i % 7 === 0 ? 'highlight' : ''}>{skill}</span>)}</div>
+        <section className="contact-section" id="contact">
+          <div className="page-width contact-grid">
+            <div><p className="section-kicker section-kicker-light">Contact</p><h2>Let&apos;s build something useful.</h2></div>
+            <div className="contact-content">
+              <p>I&apos;m open to engineering opportunities, product collaborations and technically ambitious projects.</p>
+              <a className="contact-email" href="mailto:gaurangbhogle1@gmail.com">gaurangbhogle1@gmail.com <ArrowUpRight size={20} /></a>
+              <div className="contact-location"><MapPin size={16} /> Vashi, Navi Mumbai, India</div>
+            </div>
           </div>
-        </section>
-
-        <section className="education section-wrap">
-          <div className="section-label"><span>006</span><span>FOUNDATIONS</span></div>
-          <div className="education-grid">
-            <div><p className="eyebrow">Education</p><h2>Learning in<br /><em>public.</em></h2></div>
-            <div className="education-card"><span className="year">2022 — PRESENT</span><h3>B.E. Electrical Engineering</h3><p>Fr. Conceicao Rodrigues Institute of Technology, Vashi</p><p className="education-history">Science: SS High School &amp; Junior College, Seawoods (2020 — 2022)<br />School: DAV Public School, Airoli (2010 — 2020)</p><div className="marks"><div><strong>5.8</strong><span>CGPA / 10</span></div><div><strong>51%</strong><span>HSC</span></div><div><strong>66%</strong><span>SSC</span></div></div></div>
-          </div>
-          <div className="cert-list"><p className="eyebrow">Certifications</p>{certifications.map(([year, cert]) => <div className="cert-row" key={cert}><span>{year}</span><span>{cert}</span><ArrowUpRight size={15} /></div>)}</div>
-        </section>
-
-        <section className="contact section-wrap" id="contact">
-          <div className="contact-orb"><div className="orb-ring" /><div className="orb-core"><Zap size={28} /></div></div>
-          <div className="contact-copy"><p className="eyebrow"><span className="status-dot" /> Currently open to interesting problems</p><h2>Have an idea<br />worth <em>building?</em></h2><a className="email-link" href="mailto:gaurangbhogle1@gmail.com">gaurangbhogle1@gmail.com <ArrowUpRight size={20} /></a></div>
         </section>
       </main>
 
-      <footer className="footer section-wrap">
-        <div><a className="brand" href="#top"><span className="brand-mark">GB</span><span>GAURANG<br /><em>BHOGLE</em></span></a><p>Electrical engineering × AI × creative technology</p></div>
-        <div className="footer-contact"><span>Vashi, Navi Mumbai / India</span><a href="tel:+918369120076">+91 83691 20076</a><div className="socials"><a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer" aria-label="LinkedIn">LinkedIn</a><a href="https://www.instagram.com/satlok_soul_serinity/" target="_blank" rel="noreferrer" aria-label="Instagram creative portfolio">Instagram</a><a href="mailto:gaurangbhogle1@gmail.com" aria-label="Email"><Mail size={18} /></a></div><div className="channel-links"><span>Watch / follow</span><a href="https://www.youtube.com/@soulofswords" target="_blank" rel="noreferrer" aria-label="Gaming YouTube channel"><Youtube size={16} /> Gaming</a><a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer" aria-label="Drone and FPV YouTube channel"><Youtube size={16} /> Drone / FPV</a></div></div>
-        <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top ↑</a></div>
+      <footer className="site-footer">
+        <div className="page-width footer-grid">
+          <div><a className="brand footer-brand" href="#top"><span className="brand-mark">GB</span><span className="brand-copy"><strong>Gaurang Bhogle</strong><small>Electrical Engineering</small></span></a></div>
+          <div className="footer-links">
+            <a href="https://github.com/soulofswords" target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>
+            <a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a>
+            <a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer"><Youtube size={17} /> FPV channel</a>
+            <a href="mailto:gaurangbhogle1@gmail.com"><Mail size={17} /> Email</a>
+          </div>
+          <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top <ArrowUpRight size={14} /></a></div>
+        </div>
       </footer>
     </div>
   )
