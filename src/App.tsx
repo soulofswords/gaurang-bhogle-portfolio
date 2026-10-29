@@ -38,18 +38,23 @@ const experience = [
   { date: '2022 — PRESENT', company: 'Independent FPV Drone Builder', role: 'Self-directed UAV practice', description: 'Built, tested and customized 3.5-inch, 5-inch and 7-inch FPV drones; tuned Betaflight, Cleanflight and iNav builds, integrated cameras, prototyped mounts on a 3D printer, and helped peers troubleshoot repairs.' },
   { date: 'DEC 2024 — JAN 2025', company: 'Rashtriya Chemicals & Fertilizers', role: 'Electrical Engineering Intern', description: 'Industrial exposure to electrical engineering practices, operations and the systems that keep a large plant moving.' },
   { date: 'DEC 2024 — JAN 2025', company: 'Space Root Education', role: 'Technical Collaborator', description: 'Supported Betaflight configuration, component selection and troubleshooting for a 7-inch long-range build and peer drone projects.' },
-  { date: '2020 — PRESENT', company: 'Independent / Freelance', role: 'YouTube content creator + editor', description: 'Building stories through video, motion graphics and creative experimentation across platforms.' },
+  { date: '2020 — PRESENT', company: 'Independent / Freelance', role: 'YouTube content creator + editor', description: 'Video and photo editing across Filmora, After Effects, Premiere Pro, Photoshop and Canva—from scripting and voiceovers to motion graphics, thumbnails and audience engagement.' },
 ]
 
 const certifications = [
-  ['2026', 'Infosys — Cyber Security Overview and Introduction to Cyber Security'],
-  ['2024', 'Infosys — Demystifying Generative AI for Leaders'],
-  ['2024', 'LinkedIn Learning — Python Essential Training · Getting Started with Power BI'],
-  ['2024', 'LinkedIn Learning — How to Plan Your Website · Introduction to Web Design and Development'],
-  ['2024', 'LinkedIn Learning — Getting Started as a Full-Stack Web Developer · No-Code Web Design'],
-  ['2024', 'LinkedIn Learning — Canva Essential Training'],
-  ['2024', 'TCS iON — Basics of Customer Services · Basics of Inventory Management'],
-  ['2023', 'Infosys — Young IoT Prodigy'],
+  ['11 JUL 2026', 'Infosys — Introduction to Cyber Security'],
+  ['11 JUL 2026', 'Infosys — Cyber Security Overview'],
+  ['30 JUN 2024', 'Infosys — Demystifying Generative AI for Leaders'],
+  ['18 SEP 2024', 'LinkedIn Learning — Python Essential Training'],
+  ['12 SEP 2024', 'LinkedIn Learning — Getting Started with Power BI'],
+  ['13 SEP 2024', 'LinkedIn Learning — Canva Essential Training'],
+  ['04 JUL 2024', 'LinkedIn Learning — How to Plan Your Website'],
+  ['04 JUL 2024', 'LinkedIn Learning — Introduction to Web Design and Development'],
+  ['04 JUL 2024', 'LinkedIn Learning — Getting Started as a Full-Stack Web Developer'],
+  ['06 JUL 2024', 'LinkedIn Learning — No-Code Web Design'],
+  ['01 JUL 2024', 'TCS iON — Basics of Customer Services'],
+  ['30 JUN 2024', 'TCS iON — Basics of Inventory Management'],
+  ['22 DEC 2023', 'Infosys — Young IoT Prodigy'],
 ]
 
 const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.png`
@@ -155,7 +160,7 @@ function App() {
         <section className="skills-section section-wrap">
           <div className="section-label"><span>004</span><span>THE TOOLKIT</span></div>
           <div className="skills-grid">
-            <div><h2>Tools for<br /><em>the curious.</em></h2><p>From a soldering iron to a local language model, the right tool is the one that helps the idea become real.</p></div>
+            <div><h2>Tools for<br /><em>the curious.</em></h2><p>From a soldering iron to a local language model, the right tool is the one that helps the idea become real. The archive starts with small electronics builds in 2016 and keeps expanding through drones, code and visual storytelling.</p></div>
             <div className="skills-cloud">{skills.map((skill, i) => <span key={skill} className={i % 7 === 0 ? 'highlight' : ''}>{skill}</span>)}</div>
           </div>
         </section>
