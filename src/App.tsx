@@ -58,6 +58,17 @@ const certifications = [
   ['22 DEC 2023', 'Infosys — Young IoT Prodigy'],
 ]
 
+const storyMilestones = [
+  { year: '8TH STANDARD', title: 'The first solder joints', text: 'Curiosity became hands-on when I started opening up circuits, learning to solder, and making small devices work: a portable fan, speaker, cooler and emergency light.' },
+  { year: '10TH STANDARD', title: 'Learning from an E-bike', text: 'A home-built E-bike with roughly 20 km of range introduced me to Li-ion cells, battery management and the difference between an idea and a system that has to survive real use.' },
+  { year: '12TH STANDARD', title: 'The first FPV pull', text: 'I sourced parts through AliExpress and Robu.in to build an analog FPV drone. That first flight opened a longer path through assembly, tuning, repair and flight systems.' },
+  { year: 'MAKING THROUGH SETBACKS', title: 'Self-directed by necessity', text: 'Academic setbacks did not end the making. They made the learning more self-directed: documentation, experiments, debugging and returning to the bench became the reliable rhythm.' },
+  { year: 'CREATIVE SYSTEMS', title: 'From Wondershare to motion/VFX', text: 'Video editing grew from Wondershare into Premiere Pro, After Effects, Photoshop and Media Encoder, with experiments in 3D text, Saber, matte tracking, Boris and motion-led storytelling.' },
+  { year: 'THE WIDER TOOLKIT', title: '3D, games and communities', text: 'I explored Blender, Maya, VRoid and Unity assets, attended a VJTI aero workshop, followed the Aero Club, joined GDSC, prototyped games in Unity and continued learning Unreal.' },
+  { year: 'BUILDING WITH OTHERS', title: 'Projects, teams and early collaborations', text: 'The path included the inverter and obstacle-avoidance car, the PZEM + ESP32 smart meter, Vanilla Kart’s WordPress/news-site work, and an early Soul.ai collaboration that did not continue.' },
+  { year: 'NOW', title: 'Flight systems and applied work', text: 'FPV freelance builds and troubleshooting led through Bharat, Space Root Education, Cortex Flight System and the IIT Indore/incubation context. Today at Preflight Labs LLP, I build projects for the army.' },
+]
+
 const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.png`
 
 function App() {
@@ -127,8 +138,30 @@ function App() {
           </div>
         </section>
 
+        <section className="biography section-wrap" id="story">
+          <div className="section-label"><span>002</span><span>THE STORY</span><span className="section-count">A maker&apos;s timeline</span></div>
+          <div className="biography-intro">
+            <div><p className="eyebrow">Biography</p><h2>Built by<br /><em>curiosity.</em></h2></div>
+            <div className="biography-lede">
+              <p className="lead">I did not start with a perfect roadmap. I started by soldering things together and asking what would happen if I tried one more version.</p>
+              <p>From small electronics and an E-bike to FPV drones, motion graphics, game prototypes and AI-assisted tools, my work has grown through a mix of fascination, setbacks and persistence. The common thread is practical learning: understand the system, make a first version, test it honestly, and keep the useful parts.</p>
+              <a className="arrow-link" href="https://www.instagram.com/satlok_soul_serinity/" target="_blank" rel="noreferrer">See creative work on Instagram <ArrowUpRight size={16} /></a>
+            </div>
+          </div>
+          <div className="story-grid">
+            {storyMilestones.map((item, index) => (
+              <article className="story-card" key={item.title}>
+                <span className="story-number">0{index + 1}</span>
+                <span className="story-year">{item.year}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="work section-wrap" id="work">
-          <div className="section-label"><span>002</span><span>SELECTED WORK</span><span className="section-count">10 experiments / ongoing</span></div>
+          <div className="section-label"><span>003</span><span>SELECTED WORK</span><span className="section-count">10 experiments / ongoing</span></div>
           <div className="section-heading"><h2>Things I&apos;ve<br /><em>made.</em></h2><p>Prototypes, tools and creative systems—some polished, some gloriously in progress.</p></div>
           <div className="project-grid">
             {projects.map((project) => (
@@ -148,7 +181,7 @@ function App() {
         </section>
 
         <section className="experience section-wrap" id="experience">
-          <div className="section-label"><span>003</span><span>FIELD NOTES</span></div>
+          <div className="section-label"><span>004</span><span>FIELD NOTES</span></div>
           <div className="section-heading"><h2>In the<br /><em>real world.</em></h2><p>Learning by stepping into different rooms, industries and problems.</p></div>
           <div className="experience-list">
             {experience.map((item, index) => (
@@ -162,7 +195,7 @@ function App() {
         </section>
 
         <section className="skills-section section-wrap">
-          <div className="section-label"><span>004</span><span>THE TOOLKIT</span></div>
+          <div className="section-label"><span>005</span><span>THE TOOLKIT</span></div>
           <div className="skills-grid">
             <div><h2>Tools for<br /><em>the curious.</em></h2><p>From a soldering iron to a local language model, the right tool is the one that helps the idea become real. The archive starts with small electronics builds in 2016 and keeps expanding through drones, code and visual storytelling.</p></div>
             <div className="skills-cloud">{skills.map((skill, i) => <span key={skill} className={i % 7 === 0 ? 'highlight' : ''}>{skill}</span>)}</div>
@@ -170,7 +203,7 @@ function App() {
         </section>
 
         <section className="education section-wrap">
-          <div className="section-label"><span>005</span><span>FOUNDATIONS</span></div>
+          <div className="section-label"><span>006</span><span>FOUNDATIONS</span></div>
           <div className="education-grid">
             <div><p className="eyebrow">Education</p><h2>Learning in<br /><em>public.</em></h2></div>
             <div className="education-card"><span className="year">2022 — PRESENT</span><h3>B.E. Electrical Engineering</h3><p>Fr. Conceicao Rodrigues Institute of Technology, Vashi</p><p className="education-history">Science: SS High School &amp; Junior College, Seawoods (2020 — 2022)<br />School: DAV Public School, Airoli (2010 — 2020)</p><div className="marks"><div><strong>5.8</strong><span>CGPA / 10</span></div><div><strong>51%</strong><span>HSC</span></div><div><strong>66%</strong><span>SSC</span></div></div></div>
@@ -186,7 +219,7 @@ function App() {
 
       <footer className="footer section-wrap">
         <div><a className="brand" href="#top"><span className="brand-mark">GB</span><span>GAURANG<br /><em>BHOGLE</em></span></a><p>Electrical engineering × AI × creative technology</p></div>
-        <div className="footer-contact"><span>Vashi, Navi Mumbai / India</span><a href="tel:+918369120076">+91 83691 20076</a><div className="socials"><a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer" aria-label="LinkedIn">LinkedIn</a><a href="mailto:gaurangbhogle1@gmail.com" aria-label="Email"><Mail size={18} /></a></div><div className="channel-links"><span>Watch / follow</span><a href="https://www.youtube.com/@soulofswords" target="_blank" rel="noreferrer" aria-label="Gaming YouTube channel"><Youtube size={16} /> Gaming</a><a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer" aria-label="Drone and FPV YouTube channel"><Youtube size={16} /> Drone / FPV</a></div></div>
+        <div className="footer-contact"><span>Vashi, Navi Mumbai / India</span><a href="tel:+918369120076">+91 83691 20076</a><div className="socials"><a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer" aria-label="LinkedIn">LinkedIn</a><a href="https://www.instagram.com/satlok_soul_serinity/" target="_blank" rel="noreferrer" aria-label="Instagram creative portfolio">Instagram</a><a href="mailto:gaurangbhogle1@gmail.com" aria-label="Email"><Mail size={18} /></a></div><div className="channel-links"><span>Watch / follow</span><a href="https://www.youtube.com/@soulofswords" target="_blank" rel="noreferrer" aria-label="Gaming YouTube channel"><Youtube size={16} /> Gaming</a><a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer" aria-label="Drone and FPV YouTube channel"><Youtube size={16} /> Drone / FPV</a></div></div>
         <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top ↑</a></div>
       </footer>
     </div>
