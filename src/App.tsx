@@ -8,6 +8,7 @@ import {
   Sparkles,
   X,
   Zap,
+  Youtube,
 } from 'lucide-react'
 
 const skills = [
@@ -185,7 +186,7 @@ function App() {
 
       <footer className="footer section-wrap">
         <div><a className="brand" href="#top"><span className="brand-mark">GB</span><span>GAURANG<br /><em>BHOGLE</em></span></a><p>Electrical engineering × AI × creative technology</p></div>
-        <div className="footer-contact"><span>Vashi, Navi Mumbai / India</span><a href="tel:+918369120076">+91 83691 20076</a><div className="socials"><a href="https://linkedin.com/in/gaurang-bhogle" aria-label="LinkedIn"><Linkedin size={18} /></a><a href="mailto:gaurangbhogle1@gmail.com" aria-label="Email"><Mail size={18} /></a></div></div>
+        <div className="footer-contact"><span>Vashi, Navi Mumbai / India</span><a href="tel:+918369120076">+91 83691 20076</a><div className="socials"><a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer" aria-label="LinkedIn">LinkedIn</a><a href="mailto:gaurangbhogle1@gmail.com" aria-label="Email"><Mail size={18} /></a></div><div className="channel-links"><span>Watch / follow</span><a href="https://www.youtube.com/@soulofswords" target="_blank" rel="noreferrer" aria-label="Gaming YouTube channel"><Youtube size={16} /> Gaming</a><a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer" aria-label="Drone and FPV YouTube channel"><Youtube size={16} /> Drone / FPV</a></div></div>
         <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top ↑</a></div>
       </footer>
     </div>
