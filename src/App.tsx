@@ -24,7 +24,7 @@ const skills = [
 const projects = [
   { number: '01', title: 'Smart BMS for EV', type: 'Electrical systems / Mobility', text: 'An ongoing 3S4P 18650 NMC battery-management concept with Arduino control logic, MATLAB simulation and practical protection loops.', tags: ['EV', 'BMS', '3S4P'], tone: 'amber', visual: 'bms', caption: 'Cell monitoring / protection logic' },
   { number: '02', title: 'IoT Smart Energy Meter', type: 'IoT / Energy monitoring', text: 'A measurement system for voltage, current and RMS readings. The single-phase prototype delivered accurate readings while the three-phase iteration became a useful learning loop.', tags: ['IoT', 'Energy', 'Arduino'], tone: 'violet', visual: 'meter', caption: 'Voltage + current visibility' },
-  { number: '03', title: 'Inverter & Obstacle Avoidance Car', type: 'Embedded / Robotics', text: 'Power electronics and autonomous motion in one playful prototype—built to learn by making.', tags: ['Inverter', 'Robotics', 'Sensors'], tone: 'cyan', visual: 'robot', caption: 'Sense / decide / move' },
+  { number: '03', title: 'Inverter & Obstacle Avoidance Car', type: 'Embedded / Robotics', text: 'Power electronics and autonomous motion in one playful prototype—built to learn by making.', tags: ['Inverter', 'Robotics', 'Sensors'], tone: 'cyan', visual: 'robot', caption: 'Sense / decide / move', href: 'https://github.com/soulofswords/obstacle-avoidance-robot' },
   { number: '04', title: 'Music-Reactive LED Strip', type: 'Creative electronics', text: 'A physical light experience that listens to sound and translates rhythm into color, movement and atmosphere.', tags: ['Audio', 'LED', 'Realtime'], tone: 'pink', visual: 'led', caption: 'Sound into light' },
   { number: '05', title: 'AI Companion App', type: 'AI-assisted application', text: 'Exploring local-first, personality-driven interfaces where useful software feels a little more human.', tags: ['AI', 'UX', 'Local-first'], tone: 'lime', visual: 'ai', caption: 'Interface / context / response' },
   { number: '06', title: 'VTuber Streaming App', type: 'Creative technology', text: 'A playful production workflow combining virtual identity, live interaction and generative media.', tags: ['VTuber', 'Media', 'Realtime'], tone: 'orange', visual: 'vtuber', caption: 'Avatar / stream / audience' },
@@ -166,13 +166,13 @@ function App() {
           <div className="project-grid">
             {projects.map((project) => (
               <article className={`project-card ${project.tone}`} key={project.number}>
-                <div className="project-top"><span>{project.number}</span><ArrowUpRight size={18} /></div>
+                <div className="project-top"><span>{project.number}</span>{project.href ? <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} repository`}><ArrowUpRight size={18} /></a> : <ArrowUpRight size={18} />}</div>
                 <div className={`project-art ${project.visual ? 'has-thumbnail' : ''}`} aria-hidden="true">
                   {project.visual ? <img className="project-thumbnail" src={`${import.meta.env.BASE_URL}project-${project.visual}.svg`} alt="" /> : <><div className="art-shape" /><div className="art-line" /></>}
                   <span className="art-label">{project.caption ?? `SYSTEM / 0${project.number}`}</span>
                 </div>
                 <p className="project-type">{project.type}</p>
-                <h3>{project.title}</h3>
+                <h3>{project.href ? <a className="project-title-link" href={project.href} target="_blank" rel="noreferrer">{project.title}</a> : project.title}</h3>
                 <p className="project-text">{project.text}</p>
                 <div className="tag-row">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
               </article>
