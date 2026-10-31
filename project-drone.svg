@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
+  <title id="title">FPV drone build preview</title>
+  <desc id="desc">A quadcopter frame with four motors, flight controller and camera.</desc>
+  <rect width="640" height="300" fill="#141721"/>
+  <g stroke="#ff956b" fill="none" stroke-width="4">
+    <path d="M320 150L150 72M320 150l170-78M320 150l-170 78M320 150l170 78M260 150h120M320 110v80"/>
+    <circle cx="135" cy="62" r="28"/><circle cx="505" cy="62" r="28"/><circle cx="135" cy="238" r="28"/><circle cx="505" cy="238" r="28"/>
+    <rect x="286" y="116" width="68" height="68" rx="8"/><path d="M320 116l-24-30h48z"/>
+  </g>
+  <g fill="#f2efe9" font-family="monospace" font-size="18" text-anchor="middle"><text x="320" y="45" fill="#d5ff3f">3.5 / 5 / 7 INCH FPV</text><text x="320" y="154">FC</text><text x="320" y="276" fill="#ff956b">TUNE / CAMERA / FLY</text></g>
+</svg>

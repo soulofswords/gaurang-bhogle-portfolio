@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
+  <title id="title">Job application automator preview</title><desc id="desc">A workflow connecting job discovery, matching and application steps.</desc>
+  <rect width="640" height="300" fill="#141721"/><g stroke="#6da8ff" fill="none" stroke-width="3"><rect x="48" y="116" width="120" height="68" rx="8"/><rect x="260" y="116" width="120" height="68" rx="8"/><rect x="472" y="116" width="120" height="68" rx="8"/><path d="M168 150h92M380 150h92"/><path d="M235 137l25 13-25 13M447 137l25 13-25 13"/></g><g fill="#f2efe9" font-family="monospace" font-size="17" text-anchor="middle"><text x="320" y="48" fill="#6da8ff">FIND / MATCH / APPLY</text><text x="108" y="156">FIND</text><text x="320" y="156">MATCH</text><text x="532" y="156">APPLY</text></g>
+</svg>
