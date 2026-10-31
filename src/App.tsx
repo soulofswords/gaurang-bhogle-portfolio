@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import ThemeContext from './ThemeContext'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -8,6 +9,8 @@ import {
   Mail,
   MapPin,
   Menu,
+  Moon,
+  Sun,
   Wrench,
   X,
   Youtube,
@@ -215,13 +218,41 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   return <article className="project-card">{content}</article>
 }
 
+function useScrollReveal() {
+  useEffect(() => {
+    const reveal = () => {
+      const reveals = document.querySelectorAll('.reveal')
+      for (let i = 0; i < reveals.length; i++) {
+        const windowHeight = window.innerHeight
+        const elementTop = reveals[i].getBoundingClientRect().top
+        const elementVisible = 150
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add('active')
+        }
+      }
+    }
+    window.addEventListener('scroll', reveal)
+    reveal() // Initial check
+    return () => window.removeEventListener('scroll', reveal)
+  }, [])
+}
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const themeCtx = useContext(ThemeContext)
   const closeMenu = () => setMenuOpen(false)
+  
+  useScrollReveal()
+
+  if (!themeCtx) return null
+  const { theme, toggleTheme } = themeCtx
 
   return (
     <div className="site-shell">
-      <a className="skip-link" href="#main-content">Skip to main content</a>
+      <div className="bg-blobs">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+      </div>
 
       <header className="site-header">
         <div className="header-inner">
@@ -237,15 +268,24 @@ function App() {
             <a href="#contact" onClick={closeMenu}>Contact</a>
           </nav>
 
-          <a className="header-contact" href="mailto:gaurangbhogle1@gmail.com">Get in touch <ArrowUpRight size={15} /></a>
-          <button className="menu-button" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen}>
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginLeft: 'auto' }}>
+            <button 
+              className="theme-toggle" 
+              onClick={toggleTheme} 
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+            <a className="header-contact" href="mailto:gaurangbhogle1@gmail.com">Get in touch <ArrowUpRight size={15} /></a>
+            <button className="menu-button" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen}>
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </header>
 
       <main id="main-content">
-        <section className="hero page-width" id="top">
+        <section className="hero page-width reveal" id="top">
           <div className="hero-content">
             <p className="overline"><span /> Electrical engineering · Embedded systems · Applied AI</p>
             <h1>Building reliable systems from <em>circuit</em> to interface.</h1>
@@ -260,7 +300,7 @@ function App() {
             </dl>
           </div>
 
-          <div className="portrait-panel">
+          <div className="portrait-panel reveal">
             <div className="portrait-frame"><img src={profilePhotoUrl} alt="Gaurang Bhogle wearing a dark suit" /></div>
             <div className="portrait-caption"><span>Electrical engineering</span><span>Creator</span><span>Builder</span></div>
           </div>
@@ -276,7 +316,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section page-width" id="projects">
+        <section className="section page-width reveal" id="projects">
           <div className="section-intro">
             <div><p className="section-kicker">Selected work</p><h2>Projects built to solve, test and learn.</h2></div>
             <p>A focused selection across desktop software, electrical systems, embedded hardware and flight platforms.</p>
@@ -289,19 +329,19 @@ function App() {
                   <div className="featured-meta"><span>{project.category}</span><span className="status-badge">{project.status}</span></div>
                   <h3>{project.title}</h3>
                   <p>{project.description}</p>
-                  <div className="tag-list tag-list-dark">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                  <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
                   <span className="featured-link">{project.linkLabel} <ArrowUpRight size={17} /></span>
                 </div>
-                <div className="featured-visual"><img src={`${import.meta.env.BASE_URL}${project.image}`} alt={project.imageAlt} /></div>
+                <div className="featured-visual reveal"><img src={`${import.meta.env.BASE_URL}${project.image}`} alt={project.imageAlt} /></div>
               </a>
             ))}
           </div>
 
-          <div className="project-grid">
+          <div className="project-grid reveal">
             {selectedProjects.map((project, index) => <ProjectCard project={project} index={index} key={project.title} />)}
           </div>
 
-          <div className="additional-work">
+          <div className="additional-work reveal">
             <div><p className="section-kicker">Additional explorations</p><p>Smaller tools and formative builds that expanded the toolkit.</p></div>
             <div className="additional-list">
               {additionalWork.map(([title, description], index) => (
@@ -311,7 +351,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section section-tinted" id="experience">
+        <section className="section section-tinted reveal" id="experience">
           <div className="page-width">
             <div className="section-intro">
               <div><p className="section-kicker">Experience</p><h2>Applied learning in real environments.</h2></div>
@@ -329,7 +369,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section page-width" id="about">
+        <section className="section page-width reveal" id="about">
           <div className="about-grid">
             <div className="about-heading">
               <p className="section-kicker">About</p>
@@ -342,7 +382,7 @@ function App() {
             </div>
           </div>
 
-          <div className="capability-grid">
+          <div className="capability-grid reveal">
             {capabilities.map((group) => (
               <article className="capability-card" key={group.title}>
                 <span className="capability-number">{group.number}</span>
@@ -353,7 +393,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section education-section">
+        <section className="section education-section reveal">
           <div className="page-width education-grid">
             <div className="education-summary">
               <p className="section-kicker">Education</p>
@@ -368,7 +408,7 @@ function App() {
           </div>
         </section>
 
-        <section className="contact-section" id="contact">
+        <section className="contact-section reveal" id="contact">
           <div className="page-width contact-grid">
             <div><p className="section-kicker section-kicker-light">Contact</p><h2>Let&apos;s build something useful.</h2></div>
             <div className="contact-content">
@@ -378,20 +418,21 @@ function App() {
             </div>
           </div>
         </section>
-      </main>
-
-      <footer className="site-footer">
-        <div className="page-width footer-grid">
-          <div><a className="brand footer-brand" href="#top"><span className="brand-mark">GB</span><span className="brand-copy"><strong>Gaurang Bhogle</strong><small>Electrical Engineering</small></span></a></div>
-          <div className="footer-links">
-            <a href="https://github.com/soulofswords" target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>
-            <a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a>
-            <a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer"><Youtube size={17} /> FPV channel</a>
-            <a href="mailto:gaurangbhogle1@gmail.com"><Mail size={17} /> Email</a>
+        <footer className="site-footer">
+          <div className="page-width footer-grid">
+            <div className="footer-top">
+              <div><a className="brand footer-brand" href="#top"><span className="brand-mark">GB</span><span className="brand-copy"><strong>Gaurang Bhogle</strong><small>Electrical Engineering</small></span></a></div>
+              <div className="footer-links">
+                <a href="https://github.com/soulofswords" target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>
+                <a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a>
+                <a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer"><Youtube size={17} /> FPV channel</a>
+                <a href="mailto:gaurangbhogle1@gmail.com"><Mail size={17} /> Email</a>
+              </div>
+            </div>
+            <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top <ArrowUpRight size={14} /></a></div>
           </div>
-          <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top <ArrowUpRight size={14} /></a></div>
-        </div>
-      </footer>
+        </footer>
+      </main>
     </div>
   )
 }
