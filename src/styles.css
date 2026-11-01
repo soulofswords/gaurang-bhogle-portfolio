@@ -26,12 +26,12 @@
   --surface: #141416;
   --surface-soft: #1c1c1f;
   --ink: #f9fafb;
-  --ink-soft: #d1d5db;
-  --muted: #9ca3af;
+  --ink-soft: #e5e7eb;
+  --muted: #a1a1aa;
   --line: #26262a;
   --line-strong: #333338;
-  --accent: #4f7fff;
-  --accent-dark: #3b5fcc;
+  --accent: #2f5fe8;
+  --accent-dark: #2449bf;
   --navy: #000000;
   --navy-soft: #0a0a0c;
   --white: #f9fafb;
@@ -411,6 +411,7 @@ h1, h2, h3, p, dl, dd {
   background: rgba(45, 212, 191, 0.1);
   color: var(--success);
   font: 600 10px/1 'IBM Plex Mono', monospace;
+  border: 1px solid rgba(45, 212, 191, 0.2);
 }
 
 .project-grid {
