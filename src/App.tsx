@@ -112,7 +112,6 @@ function ProjectDialog({
           className="icon-button dialog-close"
           aria-label="Close project details"
           onClick={onClose}
-          autoFocus
         >
           <X />
         </button>
