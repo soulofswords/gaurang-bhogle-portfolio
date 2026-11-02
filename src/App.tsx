@@ -1,440 +1,827 @@
-import { useState, useEffect, useContext } from 'react'
-import ThemeContext from './ThemeContext'
 import {
-  ArrowRight,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  AnimatePresence,
+  motion,
+  MotionConfig,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from "framer-motion";
+import {
+  ArrowDown,
   ArrowUpRight,
+  Check,
   CircuitBoard,
+  Copy,
   Github,
   Linkedin,
-  Mail,
-  MapPin,
   Menu,
   Moon,
+  Pause,
+  Play,
+  Plus,
+  Radio,
   Sun,
-  Wrench,
   X,
   Youtube,
-} from 'lucide-react'
+  Zap,
+} from "lucide-react";
+import ThemeContext from "./ThemeContext";
+import {
+  additionalWork,
+  capabilities,
+  certifications,
+  experience,
+  featuredProjects,
+  selectedProjects,
+  type Project,
+} from "./data";
+import { ProjectVisual } from "./ProjectVisual";
 
-const sakuraUrl = 'https://soulofswords.github.io/Sakura-website/'
+const Sculpture = lazy(() => import("./Sculpture"));
+const projects = [
+  featuredProjects[0],
+  featuredProjects[1],
+  selectedProjects[2],
+  selectedProjects[0],
+  ...selectedProjects.filter((_, i) => i !== 0 && i !== 2),
+];
+const email = "gaurangbhogle1@gmail.com";
+const ease = [0.22, 1, 0.36, 1] as const;
 
-type Project = {
-  title: string
-  category: string
-  description: string
-  tags: string[]
-  image?: string
-  imageAlt?: string
-  href?: string
-  linkLabel?: string
-  status?: string
+function Reveal({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.75, ease }}
+    >
+      {children}
+    </motion.div>
+  );
 }
 
-const featuredProjects: Project[] = [
-  {
-    title: 'Sakura Companion',
-    category: 'Desktop AI product',
-    description: 'A Windows character companion combining local or cloud AI, memory, voice, approved Agent workflows and optional webcam tracking in one creator-focused application.',
-    tags: ['Python', 'Local AI', 'Product design', 'Desktop'],
-    image: 'project-ai.svg',
-    imageAlt: 'Diagram of the context and response loop in Sakura Companion',
-    href: sakuraUrl,
-    linkLabel: 'View product and downloads',
-    status: 'Released',
-  },
-  {
-    title: 'Sakura VTuber',
-    category: 'Creator and streaming tool',
-    description: 'A standalone VTuber workflow with face and hand tracking, model controls, RVC voice conversion, Spout and virtual-camera output for live production.',
-    tags: ['Computer vision', 'Realtime', 'Streaming', 'UX'],
-    image: 'project-vtuber.svg',
-    imageAlt: 'Diagram of the avatar and live-stream workflow in Sakura VTuber',
-    href: sakuraUrl,
-    linkLabel: 'View product and downloads',
-    status: 'Released',
-  },
-]
-
-const selectedProjects: Project[] = [
-  {
-    title: 'Smart BMS for EV',
-    category: 'Battery systems',
-    description: 'An ongoing 3S4P 18650 NMC battery-management prototype covering cell monitoring, protection logic, Arduino control and MATLAB simulation.',
-    tags: ['BMS', 'Arduino', 'MATLAB'],
-    image: 'project-bms.svg',
-    imageAlt: 'Battery cells connected to monitoring and protection logic',
-    status: 'In development',
-  },
-  {
-    title: 'IoT Smart Energy Meter',
-    category: 'Energy monitoring',
-    description: 'A connected meter for voltage, current and RMS measurement. The single-phase prototype produced reliable readings and informed a three-phase iteration.',
-    tags: ['ESP32', 'PZEM', 'IoT'],
-    image: 'project-meter.svg',
-    imageAlt: 'Energy meter dashboard showing live electrical readings',
-    href: 'https://github.com/soulofswords/iot-smart-meter',
-    linkLabel: 'View repository',
-  },
-  {
-    title: 'FPV Drone Platforms',
-    category: 'UAV systems',
-    description: 'Three years of assembling, tuning and repairing 3.5-inch cinewhoops, 5-inch digital builds and 7-inch long-range platforms.',
-    tags: ['Betaflight', 'iNav', 'Fabrication'],
-    image: 'project-drone.svg',
-    imageAlt: 'Technical diagram of an FPV quadcopter and flight data',
-    status: 'Ongoing practice',
-  },
-  {
-    title: 'Half-Bridge Inverter',
-    category: 'Power electronics',
-    description: 'A practical study of switching and DC-to-AC conversion, developed to strengthen power-stage assembly, testing and technical documentation.',
-    tags: ['Inverter', 'Switching', 'Power'],
-    href: 'https://github.com/soulofswords/inverter-half-bridge',
-    linkLabel: 'View repository',
-  },
-  {
-    title: 'Obstacle Avoidance Car',
-    category: 'Embedded robotics',
-    description: 'An autonomous vehicle prototype using distance sensing and embedded control logic to detect obstacles and select a clear path.',
-    tags: ['Arduino', 'Sensors', 'Robotics'],
-    image: 'project-robot.svg',
-    imageAlt: 'Obstacle-avoidance robot sensing objects in its path',
-    href: 'https://github.com/soulofswords/obstacle-avoidance-robot',
-    linkLabel: 'View repository',
-  },
-  {
-    title: 'Music-Reactive LED Strip',
-    category: 'Creative electronics',
-    description: 'A realtime lighting prototype that maps incoming audio energy to colour and motion for responsive ambient installations.',
-    tags: ['Audio', 'LED', 'Realtime'],
-    image: 'project-led.svg',
-    imageAlt: 'Audio waveform driving a colour-changing LED strip',
-    href: 'https://github.com/soulofswords/music-reactive-led',
-    linkLabel: 'View repository',
-  },
-]
-
-const additionalWork = [
-  ['Job Application Automator', 'Agent-assisted research and repetitive workflow automation.'],
-  ['ComfyUI Media Pipelines', 'Node-based image, concept and 3D generation workflows.'],
-  ['Early Electronics Lab', 'Fans, alarms, emergency lights, speakers, visualizers and an E-bike.'],
-]
-
-const experience = [
-  {
-    date: 'Aug 2026 — Present',
-    company: 'Preflight Labs LLP',
-    role: 'Engineering Intern',
-    description: 'Supporting technical systems, AI-assisted development and product experimentation in an applied engineering environment.',
-  },
-  {
-    date: '2022 — Present',
-    company: 'Independent FPV Drone Builder',
-    role: 'UAV design, assembly and troubleshooting',
-    description: 'Build, tune and repair FPV platforms; integrate cameras and flight hardware; prototype mounts; and help peers diagnose hardware and configuration issues.',
-  },
-  {
-    date: 'Dec 2024 — Jan 2025',
-    company: 'Rashtriya Chemicals & Fertilizers',
-    role: 'Electrical Engineering Intern · A.N. Melt Plant',
-    description: 'Completed 15 days of industrial training focused on plant processes, electrical equipment and maintenance practices.',
-  },
-  {
-    date: 'Dec 2024 — Jan 2025',
-    company: 'Space Root Education',
-    role: 'Technical Collaborator',
-    description: 'Supported component selection, Betaflight setup and troubleshooting for a 7-inch long-range drone and related student builds.',
-  },
-  {
-    date: '2020 — Present',
-    company: 'Independent / Freelance',
-    role: 'Video creator and editor',
-    description: 'Produce videos from scripting and voiceover through editing, motion graphics, thumbnails and publishing.',
-  },
-]
-
-const capabilities = [
-  {
-    number: '01',
-    title: 'Electrical & power',
-    items: ['Circuit prototyping', 'Wiring and soldering', 'Battery systems', 'Power electronics', 'Energy measurement'],
-  },
-  {
-    number: '02',
-    title: 'Embedded & flight',
-    items: ['Arduino and C++', 'Microcontrollers', 'Betaflight', 'iNav and Mission Planner', 'FPV assembly and tuning'],
-  },
-  {
-    number: '03',
-    title: 'Software & AI',
-    items: ['Python fundamentals', 'AI-assisted development', 'Local language models', 'Automation workflows', 'Testing and debugging'],
-  },
-  {
-    number: '04',
-    title: 'Design & production',
-    items: ['3D printing', 'Premiere Pro', 'After Effects', 'Photoshop', 'Motion graphics'],
-  },
-]
-
-const certifications = [
-  ['2026', 'Infosys — Introduction to Cyber Security'],
-  ['2024', 'Infosys — Demystifying Generative AI for Leaders'],
-  ['2024', 'LinkedIn Learning — Python Essential Training'],
-  ['2024', 'LinkedIn Learning — Getting Started with Power BI'],
-  ['2023', 'Infosys — Young IoT Prodigy'],
-]
-
-const profilePhotoUrl = `${import.meta.env.BASE_URL}gaurang-photo.jpg`
-
-function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const content = (
-    <>
-      <div className="project-card-top">
-        <span>{String(index + 1).padStart(2, '0')}</span>
-        {project.href ? <ArrowUpRight size={18} aria-hidden="true" /> : <CircuitBoard size={18} aria-hidden="true" />}
-      </div>
-      {project.image ? (
-        <div className="project-image-wrap">
-          <img src={`${import.meta.env.BASE_URL}${project.image}`} alt={project.imageAlt ?? ''} />
-        </div>
-      ) : (
-        <div className="project-placeholder" aria-hidden="true"><CircuitBoard size={42} /></div>
-      )}
-      <p className="project-category">{project.category}</p>
-      <h3>{project.title}</h3>
-      <p className="project-description">{project.description}</p>
-      <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-      <div className="project-card-footer">
-        <span>{project.linkLabel ?? project.status}</span>
-        {project.href && <ArrowRight size={16} aria-hidden="true" />}
-      </div>
-    </>
-  )
-
-  if (project.href) {
-    return <a className="project-card" href={project.href} target="_blank" rel="noreferrer">{content}</a>
-  }
-
-  return <article className="project-card">{content}</article>
-}
-
-function useScrollReveal() {
+function ProjectDialog({
+  project,
+  onClose,
+}: {
+  project: Project;
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    const reveal = () => {
-      const reveals = document.querySelectorAll('.reveal')
-      for (let i = 0; i < reveals.length; i++) {
-        const windowHeight = window.innerHeight
-        const elementTop = reveals[i].getBoundingClientRect().top
-        const elementVisible = 150
-        if (elementTop < windowHeight - elementVisible) {
-          reveals[i].classList.add('active')
-        }
-      }
-    }
-    window.addEventListener('scroll', reveal)
-    reveal() // Initial check
-    return () => window.removeEventListener('scroll', reveal)
-  }, [])
+    const dialog = ref.current!;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    dialog.showModal();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      dialog.close();
+      previousFocus?.focus();
+    };
+  }, []);
+  return (
+    <dialog
+      ref={ref}
+      className="project-dialog"
+      aria-labelledby="dialog-title"
+      onCancel={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="dialog-inner">
+        <button
+          className="icon-button dialog-close"
+          aria-label="Close project details"
+          onClick={onClose}
+          autoFocus
+        >
+          <X />
+        </button>
+        <span className="eyebrow">Project notes / {project.category}</span>
+        <h2 id="dialog-title">{project.title}</h2>
+        <p className="dialog-description">{project.description}</p>
+        <div className="tags">
+          {project.tags.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+        <div className="dialog-visual">
+          <ProjectVisual project={project} />
+        </div>
+        <div className="dialog-bottom">
+          <span className="eyebrow">
+            {project.status || "Engineering exploration"}
+          </span>
+          {project.href ? (
+            <a
+              className="button accent-button"
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {project.linkLabel} <ArrowUpRight size={18} />
+            </a>
+          ) : (
+            <a
+              className="text-link"
+              href={`mailto:${email}?subject=${encodeURIComponent(`Let's talk about ${project.title}`)}`}
+            >
+              Ask me about this project <ArrowUpRight size={18} />
+            </a>
+          )}
+        </div>
+      </div>
+    </dialog>
+  );
 }
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const themeCtx = useContext(ThemeContext)
-  const closeMenu = () => setMenuOpen(false)
-  
-  useScrollReveal()
+  const theme = useContext(ThemeContext)!;
+  const reducedMotion = useReducedMotion();
+  const [paused, setPaused] = useState(false);
+  const motionOff = Boolean(reducedMotion || paused);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [filter, setFilter] = useState("All work");
+  const [expanded, setExpanded] = useState(false);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const filteredProjects = projects.filter(
+    (project) =>
+      filter === "All work" ||
+      (filter === "AI & Software"
+        ? featuredProjects.includes(project)
+        : selectedProjects.includes(project)),
+  );
+  const visibleProjects =
+    expanded || filter !== "All work"
+      ? filteredProjects
+      : filteredProjects.slice(0, 4);
 
-  if (!themeCtx) return null
-  const { theme, toggleTheme } = themeCtx
+  useEffect(() => {
+    document.documentElement.dataset.motion = motionOff ? "off" : "on";
+    return () => {
+      delete document.documentElement.dataset.motion;
+    };
+  }, [motionOff]);
+  useEffect(() => {
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("keydown", close);
+      clearTimeout(copyTimer.current);
+    };
+  }, []);
+  async function copyEmail() {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      setCopyFailed(false);
+      clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setCopyFailed(true);
+    }
+  }
 
   return (
-    <div className="site-shell">
-      <div className="bg-blobs">
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-      </div>
-
-      <header className="site-header">
-        <div className="header-inner">
-          <a className="brand" href="#top" onClick={closeMenu}>
-            <span className="brand-mark">GB</span>
-            <span className="brand-copy"><strong>Gaurang Bhogle</strong><small>Electrical Engineering</small></span>
+    <MotionConfig reducedMotion={motionOff ? "always" : "user"}>
+      <div className="site-shell">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+        <motion.div className="reading-progress" style={{ scaleX }} />
+        <header className="site-header">
+          <a
+            className="brand"
+            href="#top"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Gaurang Bhogle, home"
+          >
+            <span className="brand-symbol">
+              g<span>↗</span>
+            </span>
+            <span>
+              GAURANG
+              <br />
+              BHOGLE<span className="brand-period">.</span>
+            </span>
           </a>
-
-          <nav className={menuOpen ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
-            <a href="#projects" onClick={closeMenu}>Projects</a>
-            <a href="#experience" onClick={closeMenu}>Experience</a>
-            <a href="#about" onClick={closeMenu}>About</a>
-            <a href="#contact" onClick={closeMenu}>Contact</a>
-          </nav>
-
-          <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginLeft: 'auto' }}>
-            <button 
-              className="theme-toggle" 
-              onClick={toggleTheme} 
-              aria-label="Toggle theme"
-            >
-              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
-            <a className="header-contact" href="mailto:gaurangbhogle1@gmail.com">Get in touch <ArrowUpRight size={15} /></a>
-            <button className="menu-button" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen}>
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main id="main-content">
-        <section className="hero page-width reveal" id="top">
-          <div className="hero-content">
-            <p className="overline"><span /> Electrical engineering · Embedded systems · Applied AI</p>
-            <h1>Building reliable systems from <em>circuit</em> to interface.</h1>
-            <p className="hero-summary">I&apos;m Gaurang Bhogle, an electrical engineering candidate focused on practical hardware, FPV platforms and software tools for creators. I turn early concepts into working, testable prototypes.</p>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#projects">View selected work <ArrowRight size={17} /></a>
-              <a className="button button-secondary" href="mailto:gaurangbhogle1@gmail.com">Email me</a>
-            </div>
-            <dl className="hero-details">
-              <div><dt>Current</dt><dd>Engineering Intern · Preflight Labs LLP</dd></div>
-              <div><dt>Based in</dt><dd>Navi Mumbai, India</dd></div>
-            </dl>
-          </div>
-
-          <div className="portrait-panel reveal">
-            <div className="portrait-frame"><img src={profilePhotoUrl} alt="Gaurang Bhogle wearing a dark suit" /></div>
-            <div className="portrait-caption"><span>Electrical engineering</span><span>Creator</span><span>Builder</span></div>
-          </div>
-        </section>
-
-        <section className="focus-strip" aria-label="Areas of focus">
-          <div className="page-width focus-strip-inner">
-            <span>Power electronics</span><i />
-            <span>Embedded systems</span><i />
-            <span>FPV &amp; UAV platforms</span><i />
-            <span>AI products</span><i />
-            <span>Creative technology</span>
-          </div>
-        </section>
-
-        <section className="section page-width reveal" id="projects">
-          <div className="section-intro">
-            <div><p className="section-kicker">Selected work</p><h2>Projects built to solve, test and learn.</h2></div>
-            <p>A focused selection across desktop software, electrical systems, embedded hardware and flight platforms.</p>
-          </div>
-
-          <div className="featured-grid">
-            {featuredProjects.map((project) => (
-              <a className="featured-project" href={project.href} target="_blank" rel="noreferrer" key={project.title}>
-                <div className="featured-project-content">
-                  <div className="featured-meta"><span>{project.category}</span><span className="status-badge">{project.status}</span></div>
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                  <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-                  <span className="featured-link">{project.linkLabel} <ArrowUpRight size={17} /></span>
-                </div>
-                <div className="featured-visual reveal"><img src={`${import.meta.env.BASE_URL}${project.image}`} alt={project.imageAlt} /></div>
+          <nav
+            id="main-nav"
+            className={`site-nav ${menuOpen ? "is-open" : ""}`}
+            aria-label="Main navigation"
+          >
+            {[
+              ["Work", "projects"],
+              ["About", "about"],
+              ["Experience", "experience"],
+            ].map(([label, id], i) => (
+              <a href={`#${id}`} onClick={() => setMenuOpen(false)} key={id}>
+                <sup>0{i + 1}</sup>
+                {label}
               </a>
             ))}
+            <a
+              className="mobile-contact"
+              href="#contact"
+              onClick={() => setMenuOpen(false)}
+            >
+              Let's talk <ArrowUpRight size={15} />
+            </a>
+          </nav>
+          <div className="header-actions">
+            <button
+              className="icon-button"
+              onClick={theme.toggleTheme}
+              aria-label={`Switch to ${theme.theme === "dark" ? "light" : "dark"} theme`}
+            >
+              {theme.theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
+            <a className="header-contact" href="#contact">
+              Let's talk <ArrowUpRight size={16} />
+            </a>
+            <button
+              className="icon-button menu-button"
+              aria-controls="main-nav"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X /> : <Menu />}
+            </button>
           </div>
+        </header>
 
-          <div className="project-grid reveal">
-            {selectedProjects.map((project, index) => <ProjectCard project={project} index={index} key={project.title} />)}
-          </div>
-
-          <div className="additional-work reveal">
-            <div><p className="section-kicker">Additional explorations</p><p>Smaller tools and formative builds that expanded the toolkit.</p></div>
-            <div className="additional-list">
-              {additionalWork.map(([title, description], index) => (
-                <div className="additional-item" key={title}><span>0{index + 1}</span><strong>{title}</strong><p>{description}</p></div>
-              ))}
+        <main id="main-content">
+          <section id="top" className="hero page-width">
+            <div className="hero-topline">
+              <span className="eyebrow">
+                <span className="status-dot" /> An engineer. A maker. A work in
+                progress.
+              </span>
+              <span className="eyebrow hero-location">
+                Navi Mumbai, IN <span className="tiny-cross">+</span>
+              </span>
             </div>
-          </div>
-        </section>
-
-        <section className="section section-tinted reveal" id="experience">
-          <div className="page-width">
-            <div className="section-intro">
-              <div><p className="section-kicker">Experience</p><h2>Applied learning in real environments.</h2></div>
-              <p>Hands-on work across engineering, UAV systems, industrial operations and digital production.</p>
-            </div>
-            <div className="experience-list">
-              {experience.map((item, index) => (
-                <article className="experience-item" key={`${item.company}-${item.date}`}>
-                  <span className="experience-number">0{index + 1}</span>
-                  <p className="experience-date">{item.date}</p>
-                  <div className="experience-main"><h3>{item.company}</h3><p className="experience-role">{item.role}</p><p>{item.description}</p></div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section page-width reveal" id="about">
-          <div className="about-grid">
-            <div className="about-heading">
-              <p className="section-kicker">About</p>
-              <h2>Curious about how systems work. Disciplined about making them work.</h2>
-            </div>
-            <div className="about-copy">
-              <p className="about-lead">My route into engineering started with taking apart everyday electronics, learning to solder and building small devices. That practical habit now shapes how I approach larger systems.</p>
-              <p>I work comfortably between hardware and software: assembling a circuit, tuning a flight controller, testing a measurement path, debugging an application or documenting what changed between versions.</p>
-              <p>I am currently completing a B.E. in Electrical Engineering while expanding my experience through internships, independent FPV work and product development.</p>
-            </div>
-          </div>
-
-          <div className="capability-grid reveal">
-            {capabilities.map((group) => (
-              <article className="capability-card" key={group.title}>
-                <span className="capability-number">{group.number}</span>
-                <h3>{group.title}</h3>
-                <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section education-section reveal">
-          <div className="page-width education-grid">
-            <div className="education-summary">
-              <p className="section-kicker">Education</p>
-              <h2>B.E. Electrical Engineering</h2>
-              <p className="institution">Fr. Conceicao Rodrigues Institute of Technology, Vashi</p>
-              <div className="education-meta"><span>2022 — Present</span><span>Navi Mumbai</span></div>
-            </div>
-            <div className="certifications">
-              <div className="certification-heading"><h3>Selected certifications</h3><Wrench size={20} aria-hidden="true" /></div>
-              {certifications.map(([year, title]) => <div className="certification-row" key={title}><span>{year}</span><p>{title}</p></div>)}
-            </div>
-          </div>
-        </section>
-
-        <section className="contact-section reveal" id="contact">
-          <div className="page-width contact-grid">
-            <div><p className="section-kicker section-kicker-light">Contact</p><h2>Let&apos;s build something useful.</h2></div>
-            <div className="contact-content">
-              <p>I&apos;m open to engineering opportunities, product collaborations and technically ambitious projects.</p>
-              <a className="contact-email" href="mailto:gaurangbhogle1@gmail.com">gaurangbhogle1@gmail.com <ArrowUpRight size={20} /></a>
-              <div className="contact-location"><MapPin size={16} /> Vashi, Navi Mumbai, India</div>
-            </div>
-          </div>
-        </section>
-        <footer className="site-footer">
-          <div className="page-width footer-grid">
-            <div className="footer-top">
-              <div><a className="brand footer-brand" href="#top"><span className="brand-mark">GB</span><span className="brand-copy"><strong>Gaurang Bhogle</strong><small>Electrical Engineering</small></span></a></div>
-              <div className="footer-links">
-                <a href="https://github.com/soulofswords" target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>
-                <a href="https://linkedin.com/in/gaurang-bhogle" target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a>
-                <a href="https://www.youtube.com/@fpvninjamumbai" target="_blank" rel="noreferrer"><Youtube size={17} /> FPV channel</a>
-                <a href="mailto:gaurangbhogle1@gmail.com"><Mail size={17} /> Email</a>
+            <div className="hero-layout">
+              <div className="hero-copy">
+                <motion.p
+                  className="hero-intro"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  Hi, I'm Gaurang.
+                </motion.p>
+                <h1>
+                  <span className="headline-line">
+                    <motion.span
+                      initial={{ y: "110%" }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 0.95, ease }}
+                    >
+                      Wired to
+                    </motion.span>
+                  </span>
+                  <span className="headline-line">
+                    <motion.span
+                      initial={{ y: "110%" }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 0.95, delay: 0.1, ease }}
+                    >
+                      build<span className="accent">.</span>
+                    </motion.span>
+                  </span>
+                  <span className="headline-line outline-line">
+                    <motion.span
+                      initial={{ y: "110%" }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 0.95, delay: 0.2, ease }}
+                    >
+                      Beyond.
+                    </motion.span>
+                  </span>
+                </h1>
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <p className="hero-summary">
+                    From circuits that think to ideas that fly.
+                    <br />I connect{" "}
+                    <strong>engineering, AI & creativity</strong>
+                    <br className="desktop-break" /> to make things that work in
+                    the real world.
+                  </p>
+                  <a className="button accent-button" href="#projects">
+                    Explore my work <ArrowDown size={18} />
+                  </a>
+                </motion.div>
+              </div>
+              <div className="hero-art">
+                <div className="art-grid" aria-hidden="true" />
+                <div className="art-orbit orbit-one" aria-hidden="true" />
+                <div className="art-orbit orbit-two" aria-hidden="true" />
+                <span className="art-coordinate eyebrow">
+                  FIG. 01 — THE POSSIBILITY LOOP
+                </span>
+                <Suspense
+                  fallback={
+                    <div className="sculpture-fallback" aria-hidden="true" />
+                  }
+                >
+                  <Sculpture paused={motionOff} />
+                </Suspense>
+                <span className="art-axis axis-top" aria-hidden="true">
+                  +
+                </span>
+                <span className="art-axis axis-bottom" aria-hidden="true">
+                  +
+                </span>
+                <div className="art-label label-hardware">
+                  <span />
+                  HARDWARE
+                </div>
+                <div className="art-label label-software">
+                  <span />
+                  SOFTWARE
+                </div>
+                <div className="art-label label-imagination">
+                  <span />
+                  IMAGINATION
+                </div>
+                <div className="art-caption">
+                  <span className="eyebrow">
+                    Different disciplines.
+                    <br />
+                    One endless curiosity.
+                  </span>
+                  <span className="art-caption-arrow">↗</span>
+                </div>
               </div>
             </div>
-            <div className="footer-bottom"><span>© 2026 Gaurang Parag Bhogle</span><a href="#top">Back to top <ArrowUpRight size={14} /></a></div>
+            <div className="hero-bottom">
+              <a href="#projects" className="scroll-cue">
+                <span>
+                  <ArrowDown size={16} />
+                </span>
+                SCROLL TO EXPLORE
+              </a>
+              <span className="hero-current">
+                <span className="status-dot" /> Currently building at{" "}
+                <strong>Preflight Labs LLP</strong>
+              </span>
+              <button
+                className="motion-control"
+                disabled={Boolean(reducedMotion)}
+                aria-pressed={!motionOff}
+                onClick={() => setPaused(!paused)}
+                aria-label={
+                  reducedMotion
+                    ? "Reduced motion enabled by your system"
+                    : motionOff
+                      ? "Enable motion"
+                      : "Pause motion"
+                }
+              >
+                {motionOff ? <Play size={12} /> : <Pause size={12} />}
+                {motionOff ? "MOTION OFF" : "MOTION ON"}
+              </button>
+            </div>
+          </section>
+
+          <div
+            className="marquee"
+            aria-label="Electrical engineering, applied AI, FPV and UAV, creative technology"
+          >
+            <div className="marquee-track" aria-hidden="true">
+              {[0, 1, 2, 3].map((i) => (
+                <div className="marquee-group" key={i}>
+                  <span>ELECTRICAL ENGINEERING</span>
+                  <i>✳</i>
+                  <span className="marquee-outline">APPLIED AI</span>
+                  <i>✳</i>
+                  <span>FPV & UAV</span>
+                  <i>✳</i>
+                  <span className="marquee-outline">CREATIVE TECHNOLOGY</span>
+                  <i>✳</i>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <section id="projects" className="section page-width work-section">
+            <Reveal className="section-heading">
+              <div>
+                <p className="eyebrow section-kicker">
+                  <span>01 /</span> SELECTED WORK
+                </p>
+                <h2>
+                  Ideas off the page.
+                  <br />
+                  <span className="muted">Into the world.</span>
+                </h2>
+              </div>
+              <p className="section-note">
+                A little code. A little solder.
+                <br />A lot of figuring things out.
+              </p>
+            </Reveal>
+            <div className="work-toolbar">
+              <div className="filters" aria-label="Filter projects">
+                {["All work", "AI & Software", "Hardware & Flight"].map(
+                  (item) => (
+                    <button
+                      key={item}
+                      aria-pressed={filter === item}
+                      className={filter === item ? "active" : ""}
+                      onClick={() => {
+                        setFilter(item);
+                        setExpanded(false);
+                      }}
+                    >
+                      {item}
+                      <span>
+                        {item === "All work"
+                          ? "08"
+                          : item === "AI & Software"
+                            ? "02"
+                            : "06"}
+                      </span>
+                    </button>
+                  ),
+                )}
+              </div>
+              <span className="eyebrow project-count" aria-live="polite">
+                {String(visibleProjects.length).padStart(2, "0")} PROJECTS IN
+                VIEW
+              </span>
+            </div>
+            <motion.div className="project-grid" layout={!motionOff}>
+              <AnimatePresence mode="popLayout">
+                {visibleProjects.map((project) => (
+                  <motion.article
+                    className="project-card"
+                    key={project.title}
+                    layout={!motionOff}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: motionOff ? 0 : 0.35, ease }}
+                  >
+                    <button
+                      className="project-open"
+                      onClick={() => setActiveProject(project)}
+                      aria-label={`Explore ${project.title}`}
+                    >
+                      <div className="project-visual">
+                        <ProjectVisual project={project} />
+                        <span className="project-index eyebrow">
+                          {String(projects.indexOf(project) + 1).padStart(
+                            2,
+                            "0",
+                          )}{" "}
+                          / {project.category}
+                        </span>
+                        <span className="project-view">
+                          <ArrowUpRight size={24} />
+                        </span>
+                        <span className="visual-caption">
+                          {featuredProjects.includes(project)
+                            ? "PRODUCT CONCEPT VISUAL"
+                            : "ENGINEERING STUDY"}
+                        </span>
+                      </div>
+                      <div className="project-meta">
+                        <div>
+                          <p className="eyebrow">
+                            {project.tags.slice(0, 3).join(" / ")}
+                          </p>
+                          <h3>{project.title}</h3>
+                        </div>
+                        <span className="project-status">
+                          <span />
+                          {project.status || "Prototype"}
+                        </span>
+                      </div>
+                    </button>
+                  </motion.article>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+            {filter === "All work" && (
+              <button
+                className="more-work"
+                aria-expanded={expanded}
+                onClick={() => setExpanded(!expanded)}
+              >
+                {expanded ? "Show selected work" : "More from the workbench"}
+                <span>{expanded ? "−" : "+"}</span>
+                <span className="eyebrow">
+                  {expanded ? "04 SELECTED" : "04 MORE PROJECTS"}
+                </span>
+              </button>
+            )}
+            <div className="explorations">
+              <p className="eyebrow">ALSO ON MY WORKBENCH</p>
+              {additionalWork.map(([title, description]) => (
+                <details key={title}>
+                  <summary>
+                    {title}
+                    <Plus size={17} />
+                  </summary>
+                  <p>{description}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+
+          <section id="about" className="about-section section">
+            <div className="page-width about-grid">
+              <Reveal className="portrait-block">
+                <div className="portrait-image">
+                  <img
+                    src={`${import.meta.env.BASE_URL}gaurang-photo.jpg`}
+                    alt="Gaurang Bhogle in a dark suit"
+                    loading="lazy"
+                    width="720"
+                    height="960"
+                  />
+                  <span className="portrait-cross" aria-hidden="true">
+                    +
+                  </span>
+                  <div className="portrait-name">
+                    GAURANG
+                    <br />
+                    BHOGLE<span>↗</span>
+                  </div>
+                </div>
+                <div className="portrait-caption eyebrow">
+                  <span>ENGINEER BY TRAINING.</span>
+                  <span>BUILDER BY INSTINCT.</span>
+                </div>
+              </Reveal>
+              <Reveal className="about-copy">
+                <p className="eyebrow section-kicker">
+                  <span>02 /</span> THE PERSON BEHIND THE PROJECTS
+                </p>
+                <h2>
+                  Curiosity is
+                  <br />
+                  my <span className="accent">power source.</span>
+                </h2>
+                <p className="about-lead">
+                  I was the kid taking things apart.
+                  <br />
+                  Now I put ideas together.
+                </p>
+                <p>
+                  My route into engineering started with everyday electronics, a
+                  soldering iron, and the urge to understand what makes things
+                  tick. That same curiosity now takes me from flight controllers
+                  to AI companions.
+                </p>
+                <p>
+                  I'm Gaurang, an electrical engineering candidate based in Navi
+                  Mumbai. I build across hardware and software, learn by doing,
+                  and care about that moment when a prototype finally comes
+                  alive.
+                </p>
+                <a className="text-link" href="#experience">
+                  A little more about my journey <ArrowDown size={16} />
+                </a>
+                <div className="about-footnote">
+                  <CircuitBoard size={24} />
+                  <span>
+                    At home between a circuit board
+                    <br />
+                    and a blank canvas.
+                  </span>
+                </div>
+              </Reveal>
+            </div>
+            <div className="page-width capabilities">
+              {capabilities.map((group, index) => (
+                <Reveal className="capability" key={group.title}>
+                  <div className="capability-top">
+                    <span className="eyebrow">/{group.number}</span>
+                    {index === 0 ? (
+                      <Zap />
+                    ) : index === 1 ? (
+                      <Radio />
+                    ) : index === 2 ? (
+                      <CircuitBoard />
+                    ) : (
+                      <span className="asterisk">✳</span>
+                    )}
+                  </div>
+                  <h3>{group.title}</h3>
+                  <ul>
+                    {group.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+
+          <section
+            id="experience"
+            className="section page-width experience-section"
+          >
+            <Reveal className="section-heading">
+              <div>
+                <p className="eyebrow section-kicker">
+                  <span>03 /</span> THE JOURNEY
+                </p>
+                <h2>
+                  Always learning.
+                  <br />
+                  <span className="muted">Always building.</span>
+                </h2>
+              </div>
+              <p className="section-note">
+                From the first solder joint
+                <br />
+                to what comes next.
+              </p>
+            </Reveal>
+            <div className="experience-list">
+              {experience.map((item, index) => (
+                <Reveal key={item.company}>
+                  <details
+                    className="experience-item"
+                    open={index === 0 ? true : undefined}
+                  >
+                    <summary>
+                      <span className="eyebrow experience-date">
+                        {item.date}
+                      </span>
+                      <span className="experience-title">
+                        <span>{item.company}</span>
+                        <small>{item.role}</small>
+                      </span>
+                      <span className="experience-expand">
+                        <Plus size={19} />
+                      </span>
+                    </summary>
+                    <p>{item.description}</p>
+                  </details>
+                </Reveal>
+              ))}
+            </div>
+            <div className="education-grid">
+              <Reveal>
+                <p className="eyebrow section-kicker">THE FOUNDATION</p>
+                <h3>B.E. Electrical Engineering</h3>
+                <p>Fr. Conceicao Rodrigues Institute of Technology, Vashi</p>
+                <span className="eyebrow muted">
+                  2022 — PRESENT / NAVI MUMBAI
+                </span>
+              </Reveal>
+              <Reveal>
+                <details className="certifications">
+                  <summary>
+                    Learning never stops.
+                    <span className="eyebrow">05 CERTIFICATIONS</span>
+                    <Plus size={18} />
+                  </summary>
+                  {certifications.map(([year, title]) => (
+                    <div className="certification-row" key={title}>
+                      <span className="eyebrow">{year}</span>
+                      <p>{title}</p>
+                    </div>
+                  ))}
+                </details>
+              </Reveal>
+            </div>
+          </section>
+
+          <section id="contact" className="contact-section">
+            <div className="page-width">
+              <div className="contact-top">
+                <span className="eyebrow">
+                  <span className="status-dot" /> OPEN TO CONVERSATIONS &
+                  COLLABORATIONS
+                </span>
+                <span className="eyebrow">HAVE SOMETHING IN MIND?</span>
+              </div>
+              <Reveal>
+                <a className="contact-title" href={`mailto:${email}`}>
+                  <h2>
+                    Let's make
+                    <br />
+                    something <span>matter.</span>
+                  </h2>
+                  <ArrowUpRight className="contact-arrow" strokeWidth={1} />
+                </a>
+              </Reveal>
+              <div className="contact-bottom">
+                <div>
+                  <a className="email-link" href={`mailto:${email}`}>
+                    {email}
+                  </a>
+                  <button
+                    className="copy-button"
+                    onClick={copyEmail}
+                    aria-label="Copy email address"
+                  >
+                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                  </button>
+                  <span className="copy-feedback" role="status">
+                    {copied
+                      ? "Copied!"
+                      : copyFailed
+                        ? "Select the address to copy it."
+                        : ""}
+                  </span>
+                </div>
+                <p>
+                  Engineering opportunities. Wild ideas.
+                  <br />
+                  Good conversations. My inbox is open.
+                </p>
+              </div>
+            </div>
+          </section>
+        </main>
+        <footer className="page-width site-footer">
+          <a href="#top" className="footer-logo" aria-label="Back to top">
+            gb<span>↗</span>
+          </a>
+          <div className="footer-links">
+            <a
+              href="https://github.com/soulofswords"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Github size={15} />
+              GitHub
+              <ArrowUpRight size={13} />
+            </a>
+            <a
+              href="https://linkedin.com/in/gaurang-bhogle"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Linkedin size={15} />
+              LinkedIn
+              <ArrowUpRight size={13} />
+            </a>
+            <a
+              href="https://www.youtube.com/@fpvninjamumbai"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Youtube size={15} />
+              FPV channel
+              <ArrowUpRight size={13} />
+            </a>
+          </div>
+          <span className="eyebrow footer-credit">
+            © {new Date().getFullYear()} GAURANG BHOGLE
+            <br />
+            <span>BUILT WITH INTENTION. AND A LITTLE OBSESSION.</span>
+          </span>
         </footer>
-      </main>
-    </div>
-  )
+        {activeProject && (
+          <ProjectDialog
+            project={activeProject}
+            onClose={() => setActiveProject(null)}
+          />
+        )}
+      </div>
+    </MotionConfig>
+  );
 }
 
-export default App
+export default App;
