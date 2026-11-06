@@ -1,6 +1,4 @@
 import {
-  lazy,
-  Suspense,
   useContext,
   useEffect,
   useRef,
@@ -25,8 +23,6 @@ import {
   Linkedin,
   Menu,
   Moon,
-  Pause,
-  Play,
   Plus,
   Radio,
   Sun,
@@ -46,7 +42,7 @@ import {
 } from "./data";
 import { ProjectVisual } from "./ProjectVisual";
 
-const Sculpture = lazy(() => import("./Sculpture"));
+import { Playground } from "./Playground";
 const projects = [
   featuredProjects[0],
   featuredProjects[1],
@@ -279,143 +275,7 @@ function App() {
         </header>
 
         <main id="main-content">
-          <section id="top" className="hero page-width">
-            <div className="hero-topline">
-              <span className="eyebrow">
-                <span className="status-dot" /> An engineer. A maker. A work in
-                progress.
-              </span>
-              <span className="eyebrow hero-location">
-                Navi Mumbai, IN <span className="tiny-cross">+</span>
-              </span>
-            </div>
-            <div className="hero-layout">
-              <div className="hero-copy">
-                <motion.p
-                  className="hero-intro"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  Hi, I'm Gaurang.
-                </motion.p>
-                <h1>
-                  <span className="headline-line">
-                    <motion.span
-                      initial={{ y: "110%" }}
-                      animate={{ y: 0 }}
-                      transition={{ duration: 0.95, ease }}
-                    >
-                      Wired to
-                    </motion.span>
-                  </span>
-                  <span className="headline-line">
-                    <motion.span
-                      initial={{ y: "110%" }}
-                      animate={{ y: 0 }}
-                      transition={{ duration: 0.95, delay: 0.1, ease }}
-                    >
-                      build<span className="accent">.</span>
-                    </motion.span>
-                  </span>
-                  <span className="headline-line outline-line">
-                    <motion.span
-                      initial={{ y: "110%" }}
-                      animate={{ y: 0 }}
-                      transition={{ duration: 0.95, delay: 0.2, ease }}
-                    >
-                      Beyond.
-                    </motion.span>
-                  </span>
-                </h1>
-                <motion.div
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                >
-                  <p className="hero-summary">
-                    From circuits that think to ideas that fly.
-                    <br />I connect{" "}
-                    <strong>engineering, AI & creativity</strong>
-                    <br className="desktop-break" /> to make things that work in
-                    the real world.
-                  </p>
-                  <a className="button accent-button" href="#projects">
-                    Explore my work <ArrowDown size={18} />
-                  </a>
-                </motion.div>
-              </div>
-              <div className="hero-art">
-                <div className="art-grid" aria-hidden="true" />
-                <div className="art-orbit orbit-one" aria-hidden="true" />
-                <div className="art-orbit orbit-two" aria-hidden="true" />
-                <span className="art-coordinate eyebrow">
-                  FIG. 01 — THE POSSIBILITY LOOP
-                </span>
-                <Suspense
-                  fallback={
-                    <div className="sculpture-fallback" aria-hidden="true" />
-                  }
-                >
-                  <Sculpture paused={motionOff} />
-                </Suspense>
-                <span className="art-axis axis-top" aria-hidden="true">
-                  +
-                </span>
-                <span className="art-axis axis-bottom" aria-hidden="true">
-                  +
-                </span>
-                <div className="art-label label-hardware">
-                  <span />
-                  HARDWARE
-                </div>
-                <div className="art-label label-software">
-                  <span />
-                  SOFTWARE
-                </div>
-                <div className="art-label label-imagination">
-                  <span />
-                  IMAGINATION
-                </div>
-                <div className="art-caption">
-                  <span className="eyebrow">
-                    Different disciplines.
-                    <br />
-                    One endless curiosity.
-                  </span>
-                  <span className="art-caption-arrow">↗</span>
-                </div>
-              </div>
-            </div>
-            <div className="hero-bottom">
-              <a href="#projects" className="scroll-cue">
-                <span>
-                  <ArrowDown size={16} />
-                </span>
-                SCROLL TO EXPLORE
-              </a>
-              <span className="hero-current">
-                <span className="status-dot" /> Currently building at{" "}
-                <strong>Preflight Labs LLP</strong>
-              </span>
-              <button
-                className="motion-control"
-                disabled={Boolean(reducedMotion)}
-                aria-pressed={!motionOff}
-                onClick={() => setPaused(!paused)}
-                aria-label={
-                  reducedMotion
-                    ? "Reduced motion enabled by your system"
-                    : motionOff
-                      ? "Enable motion"
-                      : "Pause motion"
-                }
-              >
-                {motionOff ? <Play size={12} /> : <Pause size={12} />}
-                {motionOff ? "MOTION OFF" : "MOTION ON"}
-              </button>
-            </div>
-          </section>
+          <Playground motionOff={motionOff} reducedMotion={Boolean(reducedMotion)} toggleMotion={() => setPaused(!paused)} openProject={setActiveProject} />
 
           <div
             className="marquee"

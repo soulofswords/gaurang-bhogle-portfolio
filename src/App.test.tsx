@@ -51,6 +51,27 @@ const mount = () =>
   );
 
 describe("Portfolio visitor flows", () => {
+  it("walks through all four guides and opens the matching project", () => {
+    mount();
+    const tour = screen.getByRole("button", { name: /Take the studio tour/ });
+    tour.focus();
+    fireEvent.click(tour);
+    expect(screen.getByRole("button", { name: "Back" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("heading", { name: "Software with a little soul." })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Next stop/ }));
+    expect(screen.getByRole("heading", { name: "Ideas that actually take off." })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Next stop/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Next stop/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Finish tour" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(tour);
+    fireEvent.click(screen.getByRole("button", { name: /Meet Volt:/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Open project notes/ }));
+    expect(screen.getByRole("heading", { name: "Smart BMS for EV", level: 2 })).toBeTruthy();
+    expect(document.body.style.overflow).toBe("hidden");
+    fireEvent.click(screen.getByRole("button", { name: "Close project details" }));
+    expect(document.body.style.overflow).toBe("");
+  });
   it("filters projects and expands the complete project collection", async () => {
     mount();
     expect(screen.getAllByRole("button", { name: /^Explore / })).toHaveLength(
@@ -107,10 +128,10 @@ describe("Portfolio visitor flows", () => {
     fireEvent.click(screen.getByRole("button", { name: "Pause motion" }));
     expect(document.documentElement.dataset.motion).toBe("off");
     fireEvent.click(
-      screen.getByRole("button", { name: "Switch to light theme" }),
+      screen.getByRole("button", { name: "Switch to dark theme" }),
     );
-    expect(document.documentElement.dataset.theme).toBe("light");
-    expect(localStorage.getItem("theme")).toBe("light");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(localStorage.getItem("theme")).toBe("dark");
     fireEvent.click(screen.getByRole("button", { name: "Open navigation" }));
     expect(
       screen
